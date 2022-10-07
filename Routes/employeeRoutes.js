@@ -1,8 +1,8 @@
 const responsesHelper = require("../Helpers/responsesHelper");
 const { canUserAccess } = require("../Helpers/audienceHelper");
 const responsesHelper = require("../Helpers/responsesHelper");
-const { AUDIENCE_OPTIONS } = require("../Env/constants");
 const jwtHelper = require("../Helpers/jwtHelper");
+const { AUDIENCE_OPTIONS } = require("../Env/constants");
 const dbEmployees = require("../DataAccess/Database/dbEmployees");
 
 const employeeRoutes = { getDetails };
