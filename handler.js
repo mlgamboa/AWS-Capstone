@@ -5,6 +5,8 @@ const express = require("serverless-express/express");
 const app = express();
 const dynamoDbClient = new AWS.DynamoDB.DocumentClient();
 
+const errorHelper = require("./Helpers/errorHelper");
+
 app.use(express.json());
 
 app.get("/", (req, res, next) => {
@@ -27,5 +29,9 @@ app.post("/post", (req, res, next) => {
 		message: "Hello from post!",
 	});
 });
+
+app.use(errorHelper.logErrorsToConsole);
+app.use(errorHelper.clientErrorHandler);
+app.use(errorHelper.errorHandler);
 
 module.exports.handler = serverless(app);
