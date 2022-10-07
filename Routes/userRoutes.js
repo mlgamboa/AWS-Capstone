@@ -5,6 +5,7 @@ const userRoutes = { login, logout };
 module.exports = userRoutes;
 
 //TODO: Fix database call
+//TODO: Fix generate token
 async function login(req, res, next) {
 	const invalidCredsMessage = "Invalid username or password";
 	const credentialsArr = req.headers.authorization.split(":");
@@ -21,38 +22,39 @@ async function login(req, res, next) {
 		return;
 	}
 
-	let account;
 	try {
-		// account = db get account by email
+		// const account = db get account by email
 		// account = {
 		// 	hashedPassword: "for testing",
 		// };
-	} catch (error) {
-		next(error);
-	}
 
-	if (!account) {
-		res.status(401).json({
-			...responsesHelper.unathorizedResponseBuilder(invalidCredsMessage),
-		});
-	} else {
-		const isMatch = await bcrypt.compare(
-			unhashedPassword,
-			account.hashedPassword
-		);
-		if (!isMatch) {
+		if (!account) {
 			res.status(401).json({
 				...responsesHelper.unathorizedResponseBuilder(
 					invalidCredsMessage
 				),
 			});
 		} else {
-			// let token = await jwtHelper.generateToken(null, account.Email);
-			// res.cookie("token", token, { httpOnly: true });
-			res.status(200).json({
-				...responsesHelper.OkResponseBuilder("OK"),
-			});
+			const isMatch = await bcrypt.compare(
+				unhashedPassword,
+				account.hashedPassword
+			);
+			if (!isMatch) {
+				res.status(401).json({
+					...responsesHelper.unathorizedResponseBuilder(
+						invalidCredsMessage
+					),
+				});
+			} else {
+				// let token = await jwtHelper.generateToken(null, account.Email);
+				// res.cookie("token", token, { httpOnly: true });
+				res.status(200).json({
+					...responsesHelper.OkResponseBuilder("OK"),
+				});
+			}
 		}
+	} catch (error) {
+		next(error);
 	}
 }
 
