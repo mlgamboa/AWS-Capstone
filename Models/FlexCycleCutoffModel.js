@@ -1,10 +1,10 @@
-class FlexCycleCutoffModel {
-	FlexCutoffId;
-	StartDate;
-	EndDate;
-	IsActive;
-	FlexCycleId;
-	CutoffCapAmount;
-	CutoffDescription;
+class flexCycleCutoffModel {
+	flexCutoffId;
+	startDate;
+	endDate;
+	isActive;
+	flexCycleId;
+	cutoffCapAmount;
+	cutoffDescription;
 }
-module.exports = FlexCycleCutoffModel;
+module.exports = flexCycleCutoffModel;

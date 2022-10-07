@@ -1,12 +1,12 @@
-class ReimbursementTransactionModel {
-	FlexReimbursementId;
-	EmployeeId;
-	FlexCutoffId;
-	TotalReimbursementAmount;
-	DateSubmitted;
-	Status;
-	DateUpdated;
-	TransactionNumber;
+class reimbursementTransactionModel {
+	flexReimbursementId;
+	employeeId;
+	flexCutoffId;
+	totalReimbursementAmount;
+	dateSubmitted;
+	status;
+	dateUpdated;
+	transactionNumber;
 }
 
-module.exports = ReimbursementTransactionModel;
+module.exports = reimbursementTransactionModel;

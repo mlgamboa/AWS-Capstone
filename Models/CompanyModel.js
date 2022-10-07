@@ -1,8 +1,8 @@
-class CompanyModel {
-	CompanyId;
-	Code;
-	Name;
-	Description;
-	Logo;
+class companyModel {
+	companyId;
+	code;
+	name;
+	description;
+	logo;
 }
-module.exports = CompanyModel;
+module.exports = companyModel;

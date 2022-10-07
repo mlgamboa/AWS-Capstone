@@ -1,7 +1,7 @@
-class CredentialsModel {
-	Email;
-	UnhashedPassword;
-	HashedPassword;
+class credentialsModel {
+	email;
+	unhashedPassword;
+	hashedPassword;
 }
 
-module.exports = CredentialsModel;
+module.exports = credentialsModel;

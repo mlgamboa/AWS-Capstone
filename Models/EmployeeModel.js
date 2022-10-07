@@ -1,14 +1,14 @@
-class EmployeeModel {
-	EmployeeId;
-	EmployeeNumber;
-	FirstName;
-	LastName;
-	Email;
-	IsActive;
-	DateAdded;
-	CompanyId;
-	RoleId;
-	Role;
+class employeeModel {
+	employeeId;
+	employeeNumber;
+	firstName;
+	lastName;
+	email;
+	isActive;
+	dateAdded;
+	companyId;
+	roleId;
+	role;
 }
 
-module.exports = EmployeeModel;
+module.exports = employeeModel;

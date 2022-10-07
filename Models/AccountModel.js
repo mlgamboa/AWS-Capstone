@@ -1,10 +1,10 @@
-class AccountModel {
-	Email;
-	AccountId;
-	EmployeeId;
-	HashedPassword;
-	IsActive;
-	DateUpdated;
+class accountModel {
+	email;
+	accountId;
+	employeeId;
+	hashedPassword;
+	isActive;
+	dateUpdated;
 }
 
-module.exports = AccountModel;
+module.exports = accountModel;

@@ -1,11 +1,11 @@
-class CategoryModel {
-	CategoryId;
-	Code;
-	Name;
-	Description;
-	DateAdded;
-	AddedBy;
-	UpdatedDate;
-	UpdatedBy;
+class categoryModel {
+	categoryId;
+	code;
+	name;
+	description;
+	dateAdded;
+	addedBy;
+	updatedDate;
+	updatedBy;
 }
-module.exports = CategoryModel;
+module.exports = categoryModel;

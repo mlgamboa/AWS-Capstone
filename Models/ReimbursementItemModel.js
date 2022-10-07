@@ -1,14 +1,14 @@
-class ReimbursementItemModel {
-	ReimItemId;
-	ReimTransId;
-	Date;
-	OrNumber;
-	NameEstablishment;
-	TinEstablishment;
-	Amount;
-	CategoryCode;
-	CategoryId;
-	Status;
+class reimbursementItemModel {
+	reimItemId;
+	reimTransId;
+	date;
+	orNumber;
+	nameEstablishment;
+	tinEstablishment;
+	amount;
+	categoryCode;
+	categoryId;
+	status;
 }
 
-module.exports = ReimbursementItemModel;
+module.exports = reimbursementItemModel;
