@@ -46,7 +46,6 @@ async function generateToken(prevToken, userEmail) {
 	return jwt.sign({}, process.env.SECRET, options);
 }
 
-//TODO: fix env call to jwt secret
 function verifyToken(req, res, next) {
 	const token = req.cookies.token;
 	if (!token) {
@@ -56,7 +55,7 @@ function verifyToken(req, res, next) {
 			),
 		});
 	} else {
-		jwt.verify(token, process.env.SECRET, function (err) {
+		jwt.verify(token, SECRET_KEY, function (err) {
 			if (err) {
 				console.error(err);
 				res.clearCookie("token");
