@@ -9,7 +9,7 @@ async function getAccountByEmployeeEmail(email) {
 	const singleResultArr = ["assign db output here"];
 
 	let account = null;
-	if (singleResultArr === 1) {
+	if (singleResultArr.length === 1) {
 		account = new accountModel();
 		//TODO: assign db result to model here
 		account.email = "sample@gmail.com";
