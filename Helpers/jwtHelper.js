@@ -5,9 +5,10 @@ function getEmployeeEmailFromToken(token) {
 	return jwt.decode(token)["sub"];
 }
 
+//TODO: fix db call
 async function generateToken(prevToken, userEmail) {
 	const email = userEmail || getEmployeeEmailFromToken(prevToken);
-	const employee = await DbEmployees.getEmployeeDetailsByEmail(email);
+	// const employee = await DbEmployees.getEmployeeDetailsByEmail(email);
 
 	let audience;
 	switch (employee.Role) {
