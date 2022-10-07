@@ -11,7 +11,10 @@ provider:
   deploymentBucket:
     name: 'awsnodejstraining'
   memorySize: 256 # mb
-  
+  environment:
+    SECRET_KEY: )x2f-l-opsnd)w!!z2m7ykvony99pt@6@6m+=q2uk3%w8*7$ow
+    MIN_REIMBURSABLE_AMOUNT: 500
+    TAX_RATE: 0.12
   
 plugins:
   - serverless-offline
