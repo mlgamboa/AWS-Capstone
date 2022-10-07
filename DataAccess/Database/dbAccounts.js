@@ -1,4 +1,5 @@
 const accountModel = require("../../Models/accountModel");
+const dynamoDbClient = new AWS.DynamoDB.DocumentClient();
 
 const dbAccounts = { getAccountByEmployeeEmail };
 module.exports = dbAccounts;
