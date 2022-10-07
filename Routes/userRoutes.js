@@ -23,13 +23,16 @@ async function login(req, res, next) {
 	let account;
 	try {
 		// account = db get account by email
+		// account = {
+		// 	hashedPassword: "for testing",
+		// };
 	} catch (error) {
 		next(error);
 	}
 
 	if (!account) {
 		res.status(401).json({
-			...responses.unathorizedResponseBuilder(invalidCredsMessage),
+			...responsesHelper.unathorizedResponseBuilder(invalidCredsMessage),
 		});
 	} else {
 		const isMatch = await bcrypt.compare(
@@ -38,13 +41,15 @@ async function login(req, res, next) {
 		);
 		if (!isMatch) {
 			res.status(401).json({
-				...responses.unathorizedResponseBuilder(invalidCredsMessage),
+				...responsesHelper.unathorizedResponseBuilder(
+					invalidCredsMessage
+				),
 			});
 		} else {
 			// let token = await jwtHelper.generateToken(null, account.Email);
 			// res.cookie("token", token, { httpOnly: true });
 			res.status(200).json({
-				...responses.OkResponseBuilder("OK"),
+				...responsesHelper.OkResponseBuilder("OK"),
 			});
 		}
 	}
