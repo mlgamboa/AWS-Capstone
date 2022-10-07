@@ -1,6 +1,6 @@
 {
-    "path":"/post",
-    "httpMethod":"POST",
+    "path":"/logout",
+    "httpMethod":"GET",
     "body":
     {
         "username":"email@gmail.com",
@@ -8,7 +8,7 @@
     },
     "headers": 
     {
-        "authorization": "username:"
+        "authorization": "username:123"
     },
     "query":
     {
