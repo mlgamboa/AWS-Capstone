@@ -4,7 +4,12 @@ const { JWT_OPTIONS } = require("../Env/constants");
 const responsesHelper = require("../Helpers/responsesHelper");
 const dbEmployees = require("../DataAccess/Database/dbEmployees");
 
-const jwtHelper = { getEmployeeEmailFromToken, generateToken, verifyToken };
+const jwtHelper = {
+	getEmployeeEmailFromToken,
+	generateToken,
+	verifyToken,
+	getAudienceFromToken,
+};
 module.exports = jwtHelper;
 
 function getEmployeeEmailFromToken(token) {
