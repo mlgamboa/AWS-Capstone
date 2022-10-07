@@ -25,7 +25,7 @@ async function login(req, res, next) {
 	}
 
 	try {
-		const account = await dbAccounts.getAccountByEmployeeEmail(user.Email);
+		const account = await dbAccounts.getAccountByEmployeeEmail(email);
 
 		if (!account) {
 			res.status(401).json({
