@@ -45,6 +45,7 @@ async function generateToken(prevToken, userEmail) {
 	return jwt.sign({}, process.env.SECRET, options);
 }
 
+//TODO: fix env call to jwt secret
 function verifyToken(req, res, next) {
 	const token = req.cookies.token;
 	if (!token) {
