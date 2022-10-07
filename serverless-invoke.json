@@ -1,0 +1,13 @@
+{
+    "path":"/post",
+    "httpMethod":"POST",
+    "body":
+    {
+        "username":"email@gmail.com",
+        "password":"12345"
+    },
+    "headers": 
+    {
+        "authorization": "username:"
+    }
+}
