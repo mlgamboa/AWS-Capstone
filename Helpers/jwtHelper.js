@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 
 const { JWT_OPTIONS } = require("../Env/constants");
 const responsesHelper = require("../Helpers/responsesHelper");
+const dbEmployees = require("../DataAccess/Database/dbEmployees");
 
 const jwtHelper = { getEmployeeEmailFromToken, generateToken, verifyToken };
 module.exports = jwtHelper;
@@ -17,7 +18,7 @@ function getAudienceFromToken(token) {
 //TODO: fix db call
 async function generateToken(prevToken, userEmail) {
 	const email = userEmail || getEmployeeEmailFromToken(prevToken);
-	// const employee = await DbEmployees.getEmployeeDetailsByEmail(email);
+	const employee = await dbEmployees.getEmployeeDetailsByEmail(email);
 
 	let audience;
 	switch (employee.Role) {
