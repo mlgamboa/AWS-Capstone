@@ -1,5 +1,7 @@
 const bcrypt = require("bcrypt");
 const responsesHelper = require("../Helpers/responsesHelper");
+const jwtHelper = require("../Helpers/jwtHelper");
+const dbAccounts = require("../DataAccess/Database/dbAccounts");
 
 const userRoutes = { login, logout };
 module.exports = userRoutes;
@@ -23,10 +25,7 @@ async function login(req, res, next) {
 	}
 
 	try {
-		// const account = db get account by email
-		// account = {
-		// 	hashedPassword: "for testing",
-		// };
+		const account = await dbAccounts.getAccountByEmployeeEmail(user.Email);
 
 		if (!account) {
 			res.status(401).json({
@@ -46,8 +45,8 @@ async function login(req, res, next) {
 					),
 				});
 			} else {
-				// let token = await jwtHelper.generateToken(null, account.Email);
-				// res.cookie("token", token, { httpOnly: true });
+				let token = await jwtHelper.generateToken(null, account.Email);
+				res.cookie("token", token, { httpOnly: true });
 				res.status(200).json({
 					...responsesHelper.OkResponseBuilder("OK"),
 				});
