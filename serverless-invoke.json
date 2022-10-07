@@ -1,6 +1,6 @@
 {
-    "path":"/login",
-    "httpMethod":"POST",
+    "path":"/logout",
+    "httpMethod":"GET",
     "body":
     {
         "username":"email@gmail.com",

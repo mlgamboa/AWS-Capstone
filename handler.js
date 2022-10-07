@@ -11,6 +11,7 @@ const userRoutes = require("./Routes/userRoutes");
 app.use(express.json());
 
 app.post("/login", userRoutes.login);
+app.get("/logout", userRoutes.logout);
 
 // app.get("/", (req, res, next) => {
 // 	return res.status(200).json({

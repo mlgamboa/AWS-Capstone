@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const responsesHelper = require("../Helpers/responsesHelper");
 
-const userRoutes = { login };
+const userRoutes = { login, logout };
 module.exports = userRoutes;
 
 async function login(req, res, next) {
@@ -53,4 +53,11 @@ async function login(req, res, next) {
 			});
 		}
 	}
+}
+
+async function logout(req, res, next) {
+	res.clearCookie("token");
+	res.status(200).json({
+		...responsesHelper.OkResponseBuilder("Cookies cleared"),
+	});
 }
