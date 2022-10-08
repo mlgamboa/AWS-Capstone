@@ -42,14 +42,14 @@ async function generateToken(prevToken, userEmail) {
 			break;
 	}
 	const options = {
-		algorithm: process.env.ALGORITHM,
-		expiresIn: process.env.EXPIRY,
-		issuer: process.env.ISSUER,
+		algorithm: ALGORITHM,
+		expiresIn: EXPIRY,
+		issuer: ISSUER,
 		//TODO: change email to id
 		subject: userEmail || employee.Email,
 		audience: audience,
 	};
-	return jwt.sign({}, process.env.SECRET, options);
+	return jwt.sign({}, SECRET_KEY, options);
 }
 
 function verifyToken(req, res, next) {
