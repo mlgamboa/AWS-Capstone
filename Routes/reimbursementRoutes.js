@@ -13,7 +13,7 @@ async function file(req, res, next) {
 		if (
 			canUserAccess(
 				req.headers["authorization"],
-				AUDIENCE_OPTIONS.FILE_REIMBURSEMENT_ITEM
+				AUDIENCE_OPTIONS.FILE_REIMBURSEMENT_DETAIL
 			)
 		) {
 			const reimbursementItem = new reimbursementItemModel();
@@ -46,7 +46,7 @@ async function deleteReimbDetail(req, res, next) {
 		if (
 			canUserAccess(
 				req.headers["authorization"],
-				AUDIENCE_OPTIONS.DELETE_REIMBURSEMENT_ITEM
+				AUDIENCE_OPTIONS.DELETE_REIMBURSEMENT_DETAIL
 			)
 		) {
 			const empId = jwtHelper.getEmployeeIdFromToken(token);
@@ -64,6 +64,8 @@ async function deleteReimbDetail(req, res, next) {
 				// delete transaction db delete transaction
 				// recalculate transaction amount
 			}
+		} else {
+			res.status(403).json(responsesHelper.forbiddenResponse);
 		}
 	} catch (error) {
 		next(error);
@@ -75,7 +77,7 @@ async function submitReimbursement(req, res, next) {
 		if (
 			canUserAccess(
 				req.headers["authorization"],
-				AUDIENCE_OPTIONS.SUBMIT_REIMBURSEMENT_TRANSACTION
+				AUDIENCE_OPTIONS.SUBMIT_REIMBURSEMENT
 			)
 		) {
 			const empId = jwtHelper.getEmployeeIdFromToken(token);
@@ -93,6 +95,31 @@ async function submitReimbursement(req, res, next) {
 				// delete transaction db delete transaction
 				// recalculate transaction amount
 			}
+		} else {
+			res.status(403).json(responsesHelper.forbiddenResponse);
+		}
+	} catch (error) {
+		next(error);
+	}
+}
+
+async function printReimbursement(req, res, next) {
+	try {
+		if (
+			canUserAccess(
+				req.headers["authorization"],
+				AUDIENCE_OPTIONS.PRINT_REIMBURSEMENT
+			)
+		) {
+			const empId = jwtHelper.getEmployeeIdFromToken(token);
+			//TODO get reimbursementNumber = req.body.transactionNumber
+			const reimbursement = await dbReimbursement.getLatestDraftByEmpId(
+				empId
+			);
+
+			//TODO get reimbursement by reimbursement number
+		} else {
+			res.status(403).json(responsesHelper.forbiddenResponse);
 		}
 	} catch (error) {
 		next(error);
