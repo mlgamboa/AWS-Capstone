@@ -2,6 +2,7 @@ const { AUDIENCE_OPTIONS } = require("../Env/constants");
 const dbReimbursement = require("../DataAccess/Database/dbReimbursement");
 const reimbursementItemModel = require("../Models/reimbDetailModel");
 const responsesHelper = require("../Helpers/responsesHelper");
+const reimbursementHelper = require("../Helpers/reimbursementHelper");
 const { canUserAccess } = require("../Helpers/audienceHelper");
 
 const reimbursementRoutes = {};
@@ -23,14 +24,12 @@ async function file(req, res, next) {
 			reimbursementItem.Amount = req.body.amount;
 			reimbursementItem.CategoryCode = req.body.category;
 
-			//TODO: fix db get employee by Id
+			const empId = jwtHelper.getEmployeeIdFromToken(token);
+			const reimbursement = dbReimbursement.getLatestDraftByEmpId(empId);
 
-			//TODO: fix get latest draft transaction
-			const transaction = dbReimbursement.getLatestDraftByEmpId();
-
-			if (!transaction) {
-				//TODO a transaction
-				//TODO get transaction
+			if (!reimbursement) {
+				await reimbursementHelper.makeDraftReimbursement(empId);
+				reimbursement = dbReimbursement.getLatestDraftByEmpId(empId);
 			}
 
 			//TODO validate reimbursement detail
@@ -50,6 +49,50 @@ async function deleteReimbDetail(req, res, next) {
 				AUDIENCE_OPTIONS.DELETE_REIMBURSEMENT_ITEM
 			)
 		) {
+			const empId = jwtHelper.getEmployeeIdFromToken(token);
+			const reimbursement = await dbReimbursement.getLatestDraftByEmpId(
+				empId
+			);
+
+			if (!reimbursement) {
+				res.status(400).json({
+					...responsesHelper.badRequestResponseBuilder(
+						"No draft transaction"
+					),
+				});
+			} else {
+				// delete transaction db delete transaction
+				// recalculate transaction amount
+			}
+		}
+	} catch (error) {
+		next(error);
+	}
+}
+
+async function submitReimbursement(req, res, next) {
+	try {
+		if (
+			canUserAccess(
+				req.headers["authorization"],
+				AUDIENCE_OPTIONS.SUBMIT_REIMBURSEMENT_TRANSACTION
+			)
+		) {
+			const empId = jwtHelper.getEmployeeIdFromToken(token);
+			const reimbursement = await dbReimbursement.getLatestDraftByEmpId(
+				empId
+			);
+
+			if (!reimbursement) {
+				res.status(400).json({
+					...responsesHelper.badRequestResponseBuilder(
+						"No draft transaction"
+					),
+				});
+			} else {
+				// delete transaction db delete transaction
+				// recalculate transaction amount
+			}
 		}
 	} catch (error) {
 		next(error);
