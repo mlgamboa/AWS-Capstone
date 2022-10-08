@@ -7,7 +7,6 @@ const userRoutes = { login, logout };
 module.exports = userRoutes;
 
 //TODO: Fix database call
-//TODO: Fix generate token
 async function login(req, res, next) {
 	const invalidCredsMessage = "Invalid username or password";
 	const credentialsArr = req.headers.authorization.split(":");
