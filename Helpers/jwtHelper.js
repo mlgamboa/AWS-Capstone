@@ -53,15 +53,15 @@ async function generateToken(prevToken, userEmail) {
 }
 
 function verifyToken(req, res, next) {
-	const token = req.cookies.token;
-	if (!token) {
+	const authHeader = req.headers["authorization"];
+	if (!authHeader) {
 		res.status(401).json({
 			...responsesHelper.unathorizedResponseBuilder(
 				"Not authorized to access data"
 			),
 		});
 	} else {
-		jwt.verify(token, SECRET_KEY, function (err) {
+		jwt.verify(authHeader, SECRET_KEY, function (err) {
 			if (err) {
 				console.error(err);
 				res.clearCookie("token");
