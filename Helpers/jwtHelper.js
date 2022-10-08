@@ -64,7 +64,6 @@ function verifyToken(req, res, next) {
 		jwt.verify(authHeader, SECRET_KEY, function (err) {
 			if (err) {
 				console.error(err);
-				res.clearCookie("token");
 				res.status(401).json({
 					...responsesHelper.unathorizedResponseBuilder(
 						"Please login again"
