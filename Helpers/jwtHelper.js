@@ -5,14 +5,14 @@ const responsesHelper = require("../Helpers/responsesHelper");
 const dbEmployees = require("../DataAccess/Database/dbEmployees");
 
 const jwtHelper = {
-	getEmployeeEmailFromToken,
+	getEmployeeIdFromToken,
 	generateToken,
 	verifyToken,
 	getAudienceFromToken,
 };
 module.exports = jwtHelper;
 
-function getEmployeeEmailFromToken(token) {
+function getEmployeeIdFromToken(token) {
 	return jwt.decode(token)["sub"];
 }
 
@@ -22,7 +22,7 @@ function getAudienceFromToken(token) {
 
 //TODO: fix db call
 async function generateToken(prevToken, userEmail) {
-	const email = userEmail || getEmployeeEmailFromToken(prevToken);
+	const email = userEmail || getEmployeeIdFromToken(prevToken);
 	const employee = await dbEmployees.getEmployeeDetailsByEmail(email);
 
 	let audience;
