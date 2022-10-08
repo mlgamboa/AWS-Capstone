@@ -9,10 +9,14 @@ const employeeRoutes = { getDetails };
 module.exports = employeeRoutes;
 
 async function getDetails(req, res, next) {
+	//TODO: fix db calls
+	//TODO: fix roles
 	try {
 		if (
 			canUserAccess(req.cookies.token, AUDIENCE_OPTIONS.EMPLOYEE_DETAILS)
 		) {
+			const userId = req.params.userId;
+			const reimbursementId = req.params.reimbursementId;
 			const email = jwtHelper.getEmployeeEmailFromToken(
 				req.cookies.token
 			);
