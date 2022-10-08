@@ -12,14 +12,18 @@ async function getDetails(req, res, next) {
 	//TODO: fix roles
 	try {
 		if (
-			canUserAccess(req.cookies.token, AUDIENCE_OPTIONS.EMPLOYEE_DETAILS)
+			canUserAccess(
+				req.headers["authorization"],
+				AUDIENCE_OPTIONS.EMPLOYEE_DETAILS
+			)
 		) {
 			const userId = req.params.userId;
 			const reimbursementId = req.params.reimbursementId;
-			const email = jwtHelper.getEmployeeEmailFromToken(
-				req.cookies.token
-			);
-			const employee = await dbEmployees.getEmployeeDetailsByEmail(email);
+			//TODO: fix get employee id from token
+			// const email = jwtHelper.getEmployeeEmailFromToken(
+			// 	req.cookies.token
+			// );
+			// const employee = await dbEmployees.getEmployeeDetailsByEmail(email);
 			res.status(200).json({
 				...responsesHelper.OkResponseBuilder("OK"),
 				data: {
