@@ -41,3 +41,17 @@ async function file(req, res, next) {
 		next(error);
 	}
 }
+
+async function deleteReimbDetail(req, res, next) {
+	try {
+		if (
+			canUserAccess(
+				req.headers["authorization"],
+				AUDIENCE_OPTIONS.DELETE_REIMBURSEMENT_ITEM
+			)
+		) {
+		}
+	} catch (error) {
+		next(error);
+	}
+}
