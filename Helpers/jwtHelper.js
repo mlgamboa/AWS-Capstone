@@ -45,6 +45,7 @@ async function generateToken(prevToken, userEmail) {
 		algorithm: process.env.ALGORITHM,
 		expiresIn: process.env.EXPIRY,
 		issuer: process.env.ISSUER,
+		//TODO: change email to id
 		subject: userEmail || employee.Email,
 		audience: audience,
 	};

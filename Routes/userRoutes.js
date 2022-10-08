@@ -1,6 +1,8 @@
 const bcrypt = require("bcrypt");
+
 const responsesHelper = require("../Helpers/responsesHelper");
 const jwtHelper = require("../Helpers/jwtHelper");
+
 const dbAccounts = require("../DataAccess/Database/dbAccounts");
 
 const userRoutes = { login, logout };
