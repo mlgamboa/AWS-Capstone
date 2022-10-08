@@ -20,7 +20,7 @@ async function getDetails(req, res, next) {
 			const userId = req.params.userId;
 			const reimbursementId = req.params.reimbursementId;
 			//TODO: fix get employee id from token
-			// const email = jwtHelper.getEmployeeEmailFromToken(
+			// const email = jwtHelper.getEmployeeIdFromToken(
 			// 	req.cookies.token
 			// );
 			// const employee = await dbEmployees.getEmployeeDetailsByEmail(email);
