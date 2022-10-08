@@ -8,6 +8,7 @@ const hrRoutes = {
 	getReimbDetails,
 	searchReimbByEmployee,
 	approveReimbursement,
+	rejectReimbursement,
 };
 module.exports = hrRoutes;
 
@@ -56,7 +57,7 @@ async function searchReimbByEmployee(req, res, next) {
 		if (
 			canUserAccess(
 				req.headers["authorization"],
-				AUDIENCE_OPTIONS.SEARCH_REIMB_TRANSACTION
+				AUDIENCE_OPTIONS.SEARCH_REIMB
 			)
 		) {
 			res.status(200).json({
@@ -74,7 +75,7 @@ async function approveReimbursement(req, res, next) {
 		if (
 			canUserAccess(
 				req.headers["authorization"],
-				AUDIENCE_OPTIONS.APPROVE_REIMB_TRANSACTION
+				AUDIENCE_OPTIONS.APPROVE_REIMB
 			)
 		) {
 			res.status(200).json({
@@ -92,7 +93,7 @@ async function rejectReimbursement(req, res, next) {
 		if (
 			canUserAccess(
 				req.headers["authorization"],
-				AUDIENCE_OPTIONS.REJECT_REIMB_TRANSACTION
+				AUDIENCE_OPTIONS.REJECT_REIMB
 			)
 		) {
 			res.status(200).json({
