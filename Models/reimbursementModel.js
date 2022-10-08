@@ -1,4 +1,4 @@
-class reimbursementTransactionModel {
+class reimbursementModel {
 	flexReimbursementId;
 	employeeId;
 	flexCutoffId;
@@ -9,4 +9,4 @@ class reimbursementTransactionModel {
 	transactionNumber;
 }
 
-module.exports = reimbursementTransactionModel;
+module.exports = reimbursementModel;
