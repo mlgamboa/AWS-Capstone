@@ -5,14 +5,14 @@ const responsesHelper = require("../Helpers/responsesHelper");
 const dbEmployees = require("../DataAccess/Database/dbEmployees");
 
 const jwtHelper = {
-	getEmployeeEmailFromToken,
+	getEmployeeIdFromToken,
 	generateToken,
 	verifyToken,
 	getAudienceFromToken,
 };
 module.exports = jwtHelper;
 
-function getEmployeeEmailFromToken(token) {
+function getEmployeeIdFromToken(token) {
 	return jwt.decode(token)["sub"];
 }
 
@@ -22,7 +22,7 @@ function getAudienceFromToken(token) {
 
 //TODO: fix db call
 async function generateToken(prevToken, userEmail) {
-	const email = userEmail || getEmployeeEmailFromToken(prevToken);
+	const email = userEmail || getEmployeeIdFromToken(prevToken);
 	const employee = await dbEmployees.getEmployeeDetailsByEmail(email);
 
 	let audience;
@@ -42,28 +42,28 @@ async function generateToken(prevToken, userEmail) {
 			break;
 	}
 	const options = {
-		algorithm: process.env.ALGORITHM,
-		expiresIn: process.env.EXPIRY,
-		issuer: process.env.ISSUER,
+		algorithm: ALGORITHM,
+		expiresIn: EXPIRY,
+		issuer: ISSUER,
+		//TODO: change email to id
 		subject: userEmail || employee.Email,
 		audience: audience,
 	};
-	return jwt.sign({}, process.env.SECRET, options);
+	return jwt.sign({}, SECRET_KEY, options);
 }
 
 function verifyToken(req, res, next) {
-	const token = req.cookies.token;
-	if (!token) {
+	const authHeader = req.headers["authorization"];
+	if (!authHeader) {
 		res.status(401).json({
 			...responsesHelper.unathorizedResponseBuilder(
 				"Not authorized to access data"
 			),
 		});
 	} else {
-		jwt.verify(token, SECRET_KEY, function (err) {
+		jwt.verify(authHeader, SECRET_KEY, function (err) {
 			if (err) {
 				console.error(err);
-				res.clearCookie("token");
 				res.status(401).json({
 					...responsesHelper.unathorizedResponseBuilder(
 						"Please login again"

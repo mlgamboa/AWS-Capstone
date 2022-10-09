@@ -1,4 +1,4 @@
-class reimbursementItemModel {
+class reimbDetailModel {
 	reimItemId;
 	reimTransId;
 	date;
@@ -11,4 +11,4 @@ class reimbursementItemModel {
 	status;
 }
 
-module.exports = reimbursementItemModel;
+module.exports = reimbDetailModel;

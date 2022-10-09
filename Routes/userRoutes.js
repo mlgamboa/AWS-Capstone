@@ -1,12 +1,15 @@
 const bcrypt = require("bcrypt");
+
 const responsesHelper = require("../Helpers/responsesHelper");
 const jwtHelper = require("../Helpers/jwtHelper");
+
 const dbAccounts = require("../DataAccess/Database/dbAccounts");
 
 const userRoutes = { login, logout };
 module.exports = userRoutes;
 
 //TODO: Fix database call
+//TODO: change token from cookie to header
 async function login(req, res, next) {
 	const invalidCredsMessage = "Invalid username or password";
 	const credentialsArr = req.headers.authorization.split(":");
