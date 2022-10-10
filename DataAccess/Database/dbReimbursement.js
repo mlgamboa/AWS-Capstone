@@ -39,6 +39,16 @@ async function getLatestDraftByEmpId(empId) {
 	}
 }
 
-async function add(empId, cutoffId) {}
+async function add(detail) {
+	try {
+		const params = {
+			TableName: process.env.REIMBURSEMENT_TABLE,
+			Item: detail,
+		};
+		const singleResultArr = await dynamoDbClient.put(params).promise();
+	} catch (error) {
+		console.log(error);
+	}
+}
 
 async function updateReimbursementAmount(reimbursementId, totalAmount) {}
