@@ -8,7 +8,7 @@ const { canUserAccess } = require("../Helpers/audienceHelper");
 const dataValidationHelper = require("../Helpers/dataValidationHelper");
 const jwtHelper = require("../Helpers/jwtHelper");
 
-const reimbursementRoutes = { file };
+const reimbursementRoutes = { file, deleteReimbDetail };
 module.exports = reimbursementRoutes;
 
 async function file(req, res, next) {
@@ -93,7 +93,9 @@ async function deleteReimbDetail(req, res, next) {
 				AUDIENCE_OPTIONS.DELETE_REIMBURSEMENT_DETAIL
 			)
 		) {
-			const empId = jwtHelper.getEmployeeIdFromToken(token);
+			const empId = jwtHelper.getEmployeeIdFromToken(
+				req.headers["authorization"]
+			);
 			const reimbursement = await dbReimbursement.getLatestDraftByEmpId(
 				empId
 			);
@@ -105,8 +107,29 @@ async function deleteReimbDetail(req, res, next) {
 					),
 				});
 			} else {
-				// delete transaction db delete transaction
-				// recalculate transaction amount
+				const deletedDetail = await dbReimbDetails.deleteDetail(
+					empId,
+					reimbursement.flexReimbursementId,
+					req.body.itemId
+				);
+
+				if (!deletedDetail) {
+					res.status(404).json({
+						...responsesHelper.notFoundBuilder("Item not found"),
+					});
+				} else {
+					const newTotal =
+						reimbursement.totalReimbursementAmount -
+						deletedDetail.amount;
+					await dbReimbursement.updateReimbursementAmount(
+						empId,
+						reimbursement.flexReimbursementId,
+						newTotal
+					);
+					res.status(200).json(
+						responsesHelper.OkResponseBuilder("OK. Detail deleted")
+					);
+				}
 			}
 		} else {
 			res.status(403).json(responsesHelper.forbiddenResponse);
