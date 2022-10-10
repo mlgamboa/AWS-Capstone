@@ -20,22 +20,27 @@ async function makeDraftReimbursement(empId) {
 }
 
 async function formatReimbDetail(empId, reimbDetail, reimbursement) {
-	return {
-		...reimbDetail,
+	const employee = await dbEmployees.getEmployeeDetailsById(empId);
+	const uuid = uuidv4();
+	const detail = {
 		PK: `EMP#${empId}`,
-		SK: `RMBRSMNT#${reimbursement.flexReimbursementId}`,
-		reimbDetailId: `${uuidv4()}`,
-		reimbursementId: reimbursement.flexReimbursementId,
-		GSI5: employee.lastName, //lastname
-		GSI6: employee.firstName, //firstname
-		date: formatDate(reimbDetail.date),
+		SK: `RMBRSMNT#${reimbursement.flexReimbursementId}#DTL#${uuid}`,
+		amount: reimbDetail.amount,
+		category: reimbDetail.categoryCode,
+		GSI5_PK: employee.lastName,
+		GSI6_PK: employee.firstName,
+		name_of_establishment: reimbDetail.nameEstablishment,
+		or_number: reimbDetail.orNumber,
+		RMB_status: "draft",
+		tin_of_establishment: reimbDetail.tinEstablishment,
 	};
+	return detail;
 }
 
 async function formatDraftReimbursement(empId, cutoffId) {
 	const employee = await dbEmployees.getEmployeeDetailsById(empId);
 	const uuid = uuidv4();
-	const detail = {
+	const reimbursement = {
 		PK: `EMP#${empId}`, //EMP#35
 		SK: `RMBRSMNT#${uuid}`, // RMBRSMNT#uuid
 		amount: "0",
@@ -49,7 +54,7 @@ async function formatDraftReimbursement(empId, cutoffId) {
 		transaction_number: "", //none yet
 	};
 
-	return detail;
+	return reimbursement;
 }
 
 // async function calculateReimbursementAmount(reimbursementId) {
