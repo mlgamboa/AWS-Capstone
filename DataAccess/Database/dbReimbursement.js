@@ -19,7 +19,7 @@ async function getLatestDraftByEmpId(empId) {
 			ProjectionExpression: "amount, CTF_id, RMBRSMNT_id", // -- to filter out the output
 			ExpressionAttributeValues: {
 				":pk": `EMP#${empId}`,
-				":gsi4sk": `EMP#${empId}#draft`, //EMP#36#approved
+				":gsi4sk": `EMP#${empId}#draft`,
 			},
 		};
 		const singleResultArr = await dynamoDbClient.query(params).promise();
