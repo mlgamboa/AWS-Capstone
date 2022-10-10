@@ -15,8 +15,8 @@ async function validateReimbursementDetail(reimbDetail, reimb) {
 	const isAmountCorrect = amountAboveMinimum(reimbDetail.amount);
 	// let category = await isCategoryCodeValid(reimbDetail.CategoryCode);
 	const itemAmountExceedsCap = await itemAmountExceedsCapFn(
-		reimbDetail.Amount,
-		reimb.TotalReimbursementAmount,
+		reimbDetail.amount,
+		reimb.totalReimbursementAmount,
 		reimb.flexCutoffId
 	);
 
@@ -77,7 +77,7 @@ function dateAfterCurrent(dateStr) {
 }
 
 function amountAboveMinimum(amount) {
-	return amount >= MIN_REIMBURSABLE_AMOUNT;
+	return amount >= process.env.MIN_REIMBURSABLE_AMOUNT;
 }
 
 // async function isCategoryCodeValid(categoryCode) {
@@ -93,7 +93,7 @@ async function itemAmountExceedsCapFn(
 ) {
 	let flexCycle = await dbFlexCycleCutoff.getFlexCycleById(flexCutoffId);
 	let newTotal = totalReimbursementAmount + amount;
-	return newTotal > flexCycle.CutoffCapAmount;
+	return newTotal > flexCycle.cutoffCapAmount;
 }
 
 async function transactionAmountExceedsCapFn(
