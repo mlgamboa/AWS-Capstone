@@ -1,9 +1,5 @@
-
 const AWS = require("aws-sdk");
-
-
-const dbReimbDetails = { getDetailsByReimbId };
-
+const dbReimbDetails = { getDetailsByReimbId, file };
 module.exports = dbReimbDetails;
 
 async function file(reimbDetail) {
