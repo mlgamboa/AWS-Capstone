@@ -7,7 +7,7 @@ const reimbursementHelper = require("../Helpers/reimbursementHelper");
 const { canUserAccess } = require("../Helpers/audienceHelper");
 const dataValidationHelper = require("../Helpers/dataValidationHelper");
 
-const reimbursementRoutes = {};
+const reimbursementRoutes = { file };
 module.exports = reimbursementRoutes;
 
 async function file(req, res, next) {
@@ -48,7 +48,13 @@ async function file(req, res, next) {
 					data: validationResults.errors,
 				});
 			} else {
-				reimbDetail = { ...validationResults.reimbDetail };
+				reimbDetails = {
+					...reimbursementHelper.formatReimbDetail(
+						empId,
+						reimbDetail,
+						reimbursement
+					),
+				};
 				await dbReimbDetails.file(reimbDetail);
 				await dbReimbursement.updateReimbursementAmount(empId);
 			}
