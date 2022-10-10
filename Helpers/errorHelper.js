@@ -41,7 +41,7 @@ function clientErrorHandler(err, req, res, next) {
 }
 
 function errorHandler(err, req, res, next) {
-	res.status(500).json(errorHelpers.errorBuilder(err));
+	res.status(500).json(errorHelper.errorBuilder(err));
 }
 
 function errorBuilder(err) {

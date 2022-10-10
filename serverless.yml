@@ -1,4 +1,4 @@
-service: awsnodetraining-group3
+service: awsnodetraining-mike-v2
 frameworkVersion: '3'
 
 provider:
@@ -38,6 +38,10 @@ provider:
 plugins:
   - serverless-offline
   - serverless-express
+
+custom:
+  serverless-offline:
+    httpPort: 8080
 
 functions:
   api:
