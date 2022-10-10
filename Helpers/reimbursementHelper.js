@@ -16,6 +16,8 @@ async function makeDraftReimbursement(empId) {
 		empId,
 		latestFlexCycleCutoff
 	);
+	console.log(reimbursement);
+	return;
 	await dbReimbursement.add(reimbursement);
 }
 
