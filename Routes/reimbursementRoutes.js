@@ -14,11 +14,10 @@ module.exports = reimbursementRoutes;
 async function file(req, res, next) {
 	try {
 		if (
-			// canUserAccess(
-			// 	req.headers["authorization"],
-			// 	AUDIENCE_OPTIONS.FILE_REIMBURSEMENT_DETAIL
-			// )
-			true
+			canUserAccess(
+				req.headers["authorization"],
+				AUDIENCE_OPTIONS.FILE_REIMBURSEMENT_DETAIL
+			)
 		) {
 			const reimbDetail = new reimbDetailModel();
 			reimbDetail.date = req.body.date;
@@ -63,13 +62,16 @@ async function file(req, res, next) {
 						reimbDetail,
 						reimbursement
 					);
-				console.log("formattedReimbDetail");
-				console.log(formattedReimbDetail);
 
-				res.status(200).json({ message: "OK" });
-				return;
-				await dbReimbDetails.file(reimbDetail);
-				await dbReimbursement.updateReimbursementAmount(empId);
+				const newTotal =
+					reimbursement.totalReimbursementAmount + reimbDetail.amount;
+
+				await dbReimbDetails.file(formattedReimbDetail);
+				await dbReimbursement.updateReimbursementAmount(
+					empId,
+					reimbursement.flexReimbursementId,
+					newTotal
+				);
 
 				res.status(200).json({
 					...responsesHelper.OkResponseBuilder("Detail Filed"),
