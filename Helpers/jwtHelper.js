@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const { JWT_OPTIONS } = require("../Env/constants");
 const responsesHelper = require("../Helpers/responsesHelper");
 const dbEmployees = require("../DataAccess/Database/dbEmployees");
+const dbUser = require("../DataAccess/Database/dbUser");
 
 const jwtHelper = {
 	getEmployeeIdFromToken,
@@ -20,13 +21,14 @@ function getAudienceFromToken(token) {
 	return jwt.decode(token)["aud"];
 }
 
-//TODO: fix db call
-async function generateToken(prevToken, userEmail) {
-	const email = userEmail || getEmployeeIdFromToken(prevToken);
-	const employee = await dbEmployees.getEmployeeDetailsByEmail(email);
+//TODO: fix db call 
+async function generateToken(prevToken, userId) {
+	const id = userId || getEmployeeIdFromToken(prevToken);
+	const employee = await dbEmployees.getEmployeeDetailsById(id);
+	console.log(employee);
 
 	let audience;
-	switch (employee.Role) {
+	switch (employee.role) {
 		case "employee":
 			audience = JWT_OPTIONS.EMPLOYEE_AUDIENCE;
 			break;
@@ -42,14 +44,14 @@ async function generateToken(prevToken, userEmail) {
 			break;
 	}
 	const options = {
-		algorithm: ALGORITHM,
-		expiresIn: EXPIRY,
-		issuer: ISSUER,
+		algorithm: process.env.ALGORITHM,
+		expiresIn: process.env.EXPIRY,
+		issuer: process.env.ISSUER,
 		//TODO: change email to id
-		subject: userEmail || employee.Email,
+		subject: userId || employee.employeeId,
 		audience: audience,
 	};
-	return jwt.sign({}, SECRET_KEY, options);
+	return jwt.sign({}, process.env.SECRET_KEY, options);
 }
 
 function verifyToken(req, res, next) {
@@ -61,7 +63,7 @@ function verifyToken(req, res, next) {
 			),
 		});
 	} else {
-		jwt.verify(authHeader, SECRET_KEY, function (err) {
+		jwt.verify(authHeader, SECRET_KEY, function (err, decoded) {
 			if (err) {
 				console.error(err);
 				res.status(401).json({
@@ -69,7 +71,9 @@ function verifyToken(req, res, next) {
 						"Please login again"
 					),
 				});
-			} else next();
+			} else 
+			req.user = decoded.email;  
+			next();
 		});
 	}
 }
