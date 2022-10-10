@@ -42,8 +42,7 @@ async function file(req, res, next) {
 					empId
 				);
 			}
-			res.status(200).json({ message: "OK" });
-			return;
+
 			const validationResults =
 				await dataValidationHelper.validateReimbursementDetail(
 					reimbDetail,
@@ -58,6 +57,8 @@ async function file(req, res, next) {
 					data: validationResults.errors,
 				});
 			} else {
+				res.status(200).json({ message: "OK" });
+				return;
 				reimbDetails = {
 					...reimbursementHelper.formatReimbDetail(
 						empId,
