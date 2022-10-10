@@ -6,6 +6,7 @@ const responsesHelper = require("../Helpers/responsesHelper");
 const reimbursementHelper = require("../Helpers/reimbursementHelper");
 const { canUserAccess } = require("../Helpers/audienceHelper");
 const dataValidationHelper = require("../Helpers/dataValidationHelper");
+const jwtHelper = require("../Helpers/jwtHelper");
 
 const reimbursementRoutes = { file };
 module.exports = reimbursementRoutes;
@@ -31,17 +32,20 @@ async function file(req, res, next) {
 				req.headers["authorization"]
 			);
 
-			res.status(200).json(responsesHelper.OkResponseBuilder("OK"));
-			return;
-			const reimbursement = await dbReimbursement.getLatestDraftByEmpId(
+			let reimbursement = await dbReimbursement.getLatestDraftByEmpId(
 				empId
 			);
 
 			if (!reimbursement) {
 				await reimbursementHelper.makeDraftReimbursement(empId);
-				reimbursement = dbReimbursement.getLatestDraftByEmpId(empId);
+				reimbursement = await dbReimbursement.getLatestDraftByEmpId(
+					empId
+				);
 			}
 
+			console.log(reimbursement);
+			res.status(200).json({ message: "OK" });
+			return;
 			const validationResults =
 				await dataValidationHelper.validateReimbursementDetail(
 					reimbDetail,
