@@ -1,9 +1,11 @@
 const { AUDIENCE_OPTIONS } = require("../Env/constants");
 const dbReimbursement = require("../DataAccess/Database/dbReimbursement");
-const reimbursementItemModel = require("../Models/reimbDetailModel");
+const dbReimbDetails = require("../DataAccess/Database/dbReimbDetails");
+const reimbDetailModel = require("../Models/reimbDetailModel");
 const responsesHelper = require("../Helpers/responsesHelper");
 const reimbursementHelper = require("../Helpers/reimbursementHelper");
 const { canUserAccess } = require("../Helpers/audienceHelper");
+const dataValidationHelper = require("../Helpers/dataValidationHelper");
 
 const reimbursementRoutes = {};
 module.exports = reimbursementRoutes;
@@ -16,13 +18,13 @@ async function file(req, res, next) {
 				AUDIENCE_OPTIONS.FILE_REIMBURSEMENT_DETAIL
 			)
 		) {
-			const reimbursementItem = new reimbursementItemModel();
-			reimbursementItem.Date = req.body.date;
-			reimbursementItem.OrNumber = req.body.orNumber;
-			reimbursementItem.NameEstablishment = req.body.nameEstablishment;
-			reimbursementItem.TinEstablishment = req.body.tinEstablishment;
-			reimbursementItem.Amount = req.body.amount;
-			reimbursementItem.CategoryCode = req.body.category;
+			const reimbDetail = new reimbDetailModel();
+			reimbDetail.date = req.body.date;
+			reimbDetail.orNumber = req.body.orNumber;
+			reimbDetail.nameEstablishment = req.body.nameEstablishment;
+			reimbDetail.tinEstablishment = req.body.tinEstablishment;
+			reimbDetail.amount = req.body.amount;
+			reimbDetail.categoryCode = req.body.category;
 
 			const empId = jwtHelper.getEmployeeIdFromToken(token);
 			const reimbursement = dbReimbursement.getLatestDraftByEmpId(empId);
@@ -32,7 +34,24 @@ async function file(req, res, next) {
 				reimbursement = dbReimbursement.getLatestDraftByEmpId(empId);
 			}
 
-			//TODO validate reimbursement detail
+			const validationResults =
+				await dataValidationHelper.validateReimbursementDetail(
+					reimbDetail,
+					reimbursement
+				);
+
+			if (validationResults.errors.length) {
+				res.status(400).json({
+					...responsesHelper.badRequestResponseBuilder(
+						validationResults.message
+					),
+					data: validationResults.errors,
+				});
+			} else {
+				reimbDetail = { ...validationResults.reimbDetail };
+				await dbReimbDetails.file(reimbDetail);
+				await dbReimbursement.updateReimbursementAmount(empId);
+			}
 		} else {
 			res.status(403).json(responsesHelper.forbiddenResponse);
 		}
