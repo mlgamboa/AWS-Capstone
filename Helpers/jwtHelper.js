@@ -21,7 +21,7 @@ function getAudienceFromToken(token) {
 	return jwt.decode(token)["aud"];
 }
 
-//TODO: fix db call 
+//TODO: fix db call
 async function generateToken(prevToken, userId) {
 	const id = userId || getEmployeeIdFromToken(prevToken);
 	const employee = await dbEmployees.getEmployeeDetailsById(id);
@@ -63,7 +63,7 @@ function verifyToken(req, res, next) {
 			),
 		});
 	} else {
-		jwt.verify(authHeader, SECRET_KEY, function (err, decoded) {
+		jwt.verify(authHeader, process.env.SECRET_KEY, function (err, decoded) {
 			if (err) {
 				console.error(err);
 				res.status(401).json({
@@ -71,9 +71,7 @@ function verifyToken(req, res, next) {
 						"Please login again"
 					),
 				});
-			} else 
-			req.user = decoded.email;  
-			next();
+			} else next();
 		});
 	}
 }
