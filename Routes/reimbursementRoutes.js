@@ -13,10 +13,11 @@ module.exports = reimbursementRoutes;
 async function file(req, res, next) {
 	try {
 		if (
-			canUserAccess(
-				req.headers["authorization"],
-				AUDIENCE_OPTIONS.FILE_REIMBURSEMENT_DETAIL
-			)
+			// canUserAccess(
+			// 	req.headers["authorization"],
+			// 	AUDIENCE_OPTIONS.FILE_REIMBURSEMENT_DETAIL
+			// )
+			true
 		) {
 			const reimbDetail = new reimbDetailModel();
 			reimbDetail.date = req.body.date;
@@ -26,8 +27,15 @@ async function file(req, res, next) {
 			reimbDetail.amount = req.body.amount;
 			reimbDetail.categoryCode = req.body.category;
 
-			const empId = jwtHelper.getEmployeeIdFromToken(token);
-			const reimbursement = dbReimbursement.getLatestDraftByEmpId(empId);
+			const empId = jwtHelper.getEmployeeIdFromToken(
+				req.headers["authorization"]
+			);
+
+			res.status(200).json(responsesHelper.OkResponseBuilder("OK"));
+			return;
+			const reimbursement = await dbReimbursement.getLatestDraftByEmpId(
+				empId
+			);
 
 			if (!reimbursement) {
 				await reimbursementHelper.makeDraftReimbursement(empId);
