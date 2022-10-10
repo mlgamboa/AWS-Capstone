@@ -1,6 +1,8 @@
+const dbFlexCycleCutoff = require("../DataAccess/Database/dbFlexCycleCutoff");
 const dbReimbursement = require("../DataAccess/Database/dbReimbursement");
-const { v4: uuidv4 } = require("uuid");
 const dbEmployees = require("../DataAccess/Database/dbEmployees");
+const { v4: uuidv4 } = require("uuid");
+const reimbursementModel = require("../Models/reimbursementModel");
 
 const reimbursementHelper = {
 	makeDraftReimbursement,
@@ -10,11 +12,15 @@ module.exports = reimbursementHelper;
 
 async function makeDraftReimbursement(empId) {
 	const latestFlexCycleCutoff = await dbFlexCycleCutoff.getLatestFlexCycle();
-	await dbReimbursement.add(empId, latestFlexCycleCutoff.cutoffId);
+	const reimbursement = formatDraftReimbursement(
+		empId,
+		latestFlexCycleCutoff
+	);
+	await dbReimbursement.add(reimbursement);
 }
 
-function formatReimbDetail(empId, reimbDetail, reimbursement) {
-	const employee = dbEmployees.getEmployeeDetailsById(empId);
+async function formatReimbDetail(empId, reimbDetail, reimbursement) {
+	const employee = await dbEmployees.getEmployeeDetailsById(empId);
 
 	return {
 		...reimbDetail,
@@ -26,6 +32,19 @@ function formatReimbDetail(empId, reimbDetail, reimbursement) {
 		GSI6: employee.firstName, //firstname
 		date: formatDate(reimbDetail.date),
 	};
+}
+
+async function formatDraftReimbursement(empId) {
+	const employee = await dbEmployees.getEmployeeDetailsById(empId);
+	const reimbursement = new reimbursementModel();
+	reimbursement.PK = `EMP#${empId}`;
+	reimbursement.SK = `RMBRSMNT#${uuidv4()}`;
+	reimbursement.totalReimbursementAmount = 0;
+	reimbursement.flexCutoffId = latestFlexCycleCutoff.flexCutoffId;
+	reimbursement.GSI5_PK = employee.lastName;
+	reimbursement.GSI6_PK = employee.firstName;
+	reimbursement.status = "draft";
+	return reimbursement;
 }
 
 // async function calculateReimbursementAmount(reimbursementId) {
