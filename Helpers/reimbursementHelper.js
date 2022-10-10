@@ -1,16 +1,31 @@
 const dbReimbursement = require("../DataAccess/Database/dbReimbursement");
-const dbReimbDetails = require("../DataAccess/Database/dbReimbDetails");
+const { v4: uuidv4 } = require("uuid");
+const dbEmployees = require("../DataAccess/Database/dbEmployees");
 
 const reimbursementHelper = {
 	makeDraftReimbursement,
-	calculateReimbursementAmount,
+	formatReimbDetail,
 };
 module.exports = reimbursementHelper;
 
 async function makeDraftReimbursement(empId) {
-	//TODO const cutoff = get get latest active cut off
 	const latestFlexCycleCutoff = await dbFlexCycleCutoff.getLatestFlexCycle();
 	await dbReimbursement.add(empId, latestFlexCycleCutoff.cutoffId);
+}
+
+function formatReimbDetail(empId, reimbDetail, reimbursement) {
+	const employee = dbEmployees.getEmployeeDetailsById(empId);
+
+	return {
+		...reimbDetail,
+		PK: `EMP#${empId}`,
+		SK: `RMBRSMNT#${reimbursement.flexReimbursementId}`,
+		reimbDetailId: `${uuidv4()}`,
+		reimbursementId: reimbursement.flexReimbursementId,
+		GSI5: employee.lastName, //lastname
+		GSI6: employee.firstName, //firstname
+		date: formatDate(reimbDetail.date),
+	};
 }
 
 // async function calculateReimbursementAmount(reimbursementId) {
