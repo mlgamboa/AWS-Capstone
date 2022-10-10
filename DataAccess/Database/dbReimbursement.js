@@ -1,3 +1,6 @@
+const AWS = require("aws-sdk");
+
+
 const dbReimbursement = {
 	getLatestDraftByEmpId,
 	add,
