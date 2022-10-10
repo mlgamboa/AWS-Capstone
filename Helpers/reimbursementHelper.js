@@ -12,18 +12,14 @@ module.exports = reimbursementHelper;
 
 async function makeDraftReimbursement(empId) {
 	const latestFlexCycleCutoff = await dbFlexCycleCutoff.getLatestFlexCycle();
-	const reimbursement = formatDraftReimbursement(
+	const reimbursement = await formatDraftReimbursement(
 		empId,
-		latestFlexCycleCutoff
+		latestFlexCycleCutoff.flexCutoffId
 	);
-	console.log(reimbursement);
-	return;
 	await dbReimbursement.add(reimbursement);
 }
 
 async function formatReimbDetail(empId, reimbDetail, reimbursement) {
-	const employee = await dbEmployees.getEmployeeDetailsById(empId);
-
 	return {
 		...reimbDetail,
 		PK: `EMP#${empId}`,
@@ -36,17 +32,24 @@ async function formatReimbDetail(empId, reimbDetail, reimbursement) {
 	};
 }
 
-async function formatDraftReimbursement(empId) {
+async function formatDraftReimbursement(empId, cutoffId) {
 	const employee = await dbEmployees.getEmployeeDetailsById(empId);
-	const reimbursement = new reimbursementModel();
-	reimbursement.PK = `EMP#${empId}`;
-	reimbursement.SK = `RMBRSMNT#${uuidv4()}`;
-	reimbursement.totalReimbursementAmount = 0;
-	reimbursement.flexCutoffId = latestFlexCycleCutoff.flexCutoffId;
-	reimbursement.GSI5_PK = employee.lastName;
-	reimbursement.GSI6_PK = employee.firstName;
-	reimbursement.status = "draft";
-	return reimbursement;
+	const uuid = uuidv4();
+	const detail = {
+		PK: `EMP#${empId}`, //EMP#35
+		SK: `RMBRSMNT#${uuid}`, // RMBRSMNT#uuid
+		amount: "0",
+		CTF_id: cutoffId, //cutoff id
+		date_submitted: "", //none yet
+		GSI4_SK: `EMP#${empId}#draft`, //EMP#35#draft
+		GSI5_PK: employee.lastName, //lastname
+		GSI6_PK: employee.firstName, //firstname
+		RMB_status: "draft",
+		RMBRSMNT_id: uuid, //uuid
+		transaction_number: "", //none yet
+	};
+
+	return detail;
 }
 
 // async function calculateReimbursementAmount(reimbursementId) {
