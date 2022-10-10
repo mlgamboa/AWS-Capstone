@@ -38,21 +38,13 @@ async function validateReimbursementDetail(reimbDetail, reimb) {
 	// 	errors.push("category");
 	// }
 
-	let newReimbTotal;
 	if (itemAmountExceedsCap) {
 		message +=
 			"Adding this reimbursement item will exceed the maximum reimbursement amount for your flex cycle. ";
 		errors.push("amount");
-	} else {
-		newReimbTotal = reimbDetail.Amount + reimb.TotalReimbursementAmount;
 	}
 
 	return {
-		reimbDetail: {
-			...reimbDetail,
-			Date: formatDate(reimbDetail.Date),
-		},
-		newReimbTotal,
 		message,
 		errors,
 	};
@@ -110,12 +102,4 @@ async function transactionAmountExceedsCapFn(
 ) {
 	let flexCycle = await DbFlexCycleCutoff.getByFlexCycleId(flexCutoffId);
 	return totalReimbursementAmount > flexCycle.CutoffCapAmount;
-}
-
-function formatDate(dateStr) {
-	let dateToFormat = new Date(dateStr);
-
-	return `${dateToFormat.getFullYear()}-${
-		dateToFormat.getMonth() + 1
-	}-${dateToFormat.getDate()}`;
 }
