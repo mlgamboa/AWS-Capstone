@@ -3,6 +3,8 @@ const dbReimbDetails = { getDetailsByReimbId, file };
 module.exports = dbReimbDetails;
 
 async function file(reimbDetail) {
-	//TODO FIX ME
+	try {
+		const params = {};
+	} catch (error) {}
 }
 async function getDetailsByReimbId(reimbId) {}
