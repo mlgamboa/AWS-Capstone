@@ -57,17 +57,23 @@ async function file(req, res, next) {
 					data: validationResults.errors,
 				});
 			} else {
-				res.status(200).json({ message: "OK" });
-				return;
-				reimbDetails = {
-					...reimbursementHelper.formatReimbDetail(
+				formattedReimbDetail =
+					await reimbursementHelper.formatReimbDetail(
 						empId,
 						reimbDetail,
 						reimbursement
-					),
-				};
+					);
+				console.log("formattedReimbDetail");
+				console.log(formattedReimbDetail);
+
+				res.status(200).json({ message: "OK" });
+				return;
 				await dbReimbDetails.file(reimbDetail);
 				await dbReimbursement.updateReimbursementAmount(empId);
+
+				res.status(200).json({
+					...responsesHelper.OkResponseBuilder("Detail Filed"),
+				});
 			}
 		} else {
 			res.status(403).json(responsesHelper.forbiddenResponse);
