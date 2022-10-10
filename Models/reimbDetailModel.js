@@ -1,4 +1,9 @@
 class reimbDetailModel {
+	PK;
+	SK;
+	GSI5_PK;
+	GSI6_PK;
+	RMB_status;
 	reimbDetailId;
 	reimbursementId;
 	date;
@@ -6,9 +11,7 @@ class reimbDetailModel {
 	nameEstablishment;
 	tinEstablishment;
 	amount;
-	categoryCode;
-	categoryId;
-	status;
+	category;
 }
 
 module.exports = reimbDetailModel;
