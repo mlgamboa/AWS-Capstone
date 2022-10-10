@@ -1,6 +1,6 @@
 class reimbDetailModel {
-	reimItemId;
-	reimTransId;
+	reimbDetailId;
+	reimbursementId;
 	date;
 	orNumber;
 	nameEstablishment;
