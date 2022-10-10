@@ -1,4 +1,7 @@
-const dbReimbDetails = { getDetailsByReimbId };
+const dbReimbDetails = { getDetailsByReimbId, file };
 module.exports = dbReimbDetails;
 
+async function file(reimbDetail) {
+	//TODO FIX ME
+}
 async function getDetailsByReimbId(reimbId) {}
