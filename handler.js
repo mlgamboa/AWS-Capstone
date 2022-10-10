@@ -12,7 +12,10 @@ app.use(express.json());
 app.post("/login", userRoutes.login);
 app.get("/logout", userRoutes.logout);
 
-app.get("/file-detail", reimbursementRoutes.file);
+app.post("/file-detail", reimbursementRoutes.file);
+// app.post("/file-detail", (req, res, next) => {
+// 	res.status(200).json({ message: "OK" });
+// });
 
 app.use(errorHelper.logErrorsToConsole);
 app.use(errorHelper.clientErrorHandler);
