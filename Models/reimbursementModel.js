@@ -5,7 +5,7 @@ class reimbursementModel {
 	totalReimbursementAmount;
 	dateSubmitted;
 	status;
-	dateUpdated;
+	dateAdded;
 	transactionNumber;
 }
 
