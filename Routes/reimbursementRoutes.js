@@ -42,8 +42,6 @@ async function file(req, res, next) {
 					empId
 				);
 			}
-
-			console.log(reimbursement);
 			res.status(200).json({ message: "OK" });
 			return;
 			const validationResults =
