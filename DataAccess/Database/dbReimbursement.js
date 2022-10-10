@@ -1,8 +1,6 @@
 const AWS = require("aws-sdk");
 const reimbursementModel = require("../../Models/reimbursementModel");
 
-const dynamoDbClient = new AWS.DynamoDB.DocumentClient();
-
 const dbReimbursement = {
 	getLatestDraftByEmpId,
 	add,
@@ -10,10 +8,13 @@ const dbReimbursement = {
 };
 module.exports = dbReimbursement;
 
+const dynamoDbClient = new AWS.DynamoDB.DocumentClient();
+const REIMBURSEMENT_TABLE = process.env.REIMBURSEMENT_TABLE;
+
 async function getLatestDraftByEmpId(empId) {
 	try {
 		const params = {
-			TableName: process.env.REIMBURSEMENT_TABLE,
+			TableName: REIMBURSEMENT_TABLE,
 			IndexName: "PK-GSI4_SK-index",
 			KeyConditionExpression: "PK = :pk and GSI4_SK = :gsi4sk",
 			ProjectionExpression: "amount, CTF_id, RMBRSMNT_id", // -- to filter out the output
@@ -27,8 +28,9 @@ async function getLatestDraftByEmpId(empId) {
 		let reimbursement = null;
 		if (singleResultArr.Items.length === 1) {
 			reimbursement = new reimbursementModel();
-			reimbursement.totalReimbursementAmount =
-				singleResultArr.Items[0].amount;
+			reimbursement.totalReimbursementAmount = parseInt(
+				singleResultArr.Items[0].amount
+			);
 			reimbursement.flexCutoffId = singleResultArr.Items[0].CTF_id;
 			reimbursement.flexReimbursementId =
 				singleResultArr.Items[0].RMBRSMNT_id;
@@ -42,7 +44,7 @@ async function getLatestDraftByEmpId(empId) {
 async function add(detail) {
 	try {
 		const params = {
-			TableName: process.env.REIMBURSEMENT_TABLE,
+			TableName: REIMBURSEMENT_TABLE,
 			Item: detail,
 		};
 		const singleResultArr = await dynamoDbClient.put(params).promise();
@@ -51,4 +53,16 @@ async function add(detail) {
 	}
 }
 
-async function updateReimbursementAmount(reimbursementId, totalAmount) {}
+async function updateReimbursementAmount(empId, reimbursementId, totalAmount) {
+	try {
+		const params = {
+			TableName: REIMBURSEMENT_TABLE,
+			Key: { PK: `EMP#${empId}`, SK: `RMBRSMNT#${reimbursementId}` },
+			UpdateExpression: "set amount = :amt",
+			ExpressionAttributeValues: {
+				":amt": totalAmount,
+			},
+		};
+		const singleResultArr = await dynamoDbClient.update(params).promise();
+	} catch (error) {}
+}
