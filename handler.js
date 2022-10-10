@@ -14,7 +14,11 @@ app.post("/login", userRoutes.login);
 app.get("/logout", userRoutes.logout);
 
 app.post("/file-detail", jwtHelper.verifyToken, reimbursementRoutes.file);
-app.delete("/delete-detail", reimbursementRoutes.deleteReimbDetail);
+app.delete(
+	"/delete-detail",
+	jwtHelper.verifyToken,
+	reimbursementRoutes.deleteReimbDetail
+);
 
 app.use(errorHelper.logErrorsToConsole);
 app.use(errorHelper.clientErrorHandler);
