@@ -31,9 +31,8 @@ async function getEmployeeDetailsById(userId) {
 				email: singleResultArr.Items[0].email,
 				isActive: singleResultArr.Items[0].is_active,
 				dateAdded: singleResultArr.Items[0].date_added,
-				role: singleResultArr.Items[0].EMP_role
-			}
-			
+				role: singleResultArr.Items[0].EMP_role,
+			};
 		}
 		return employee;
 	} catch (error) {
