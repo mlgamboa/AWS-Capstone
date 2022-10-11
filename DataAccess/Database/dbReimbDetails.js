@@ -58,8 +58,8 @@ async function updateDetailToSubmitted(empId, reimbursementId, detailId) {
 			PK: `EMP#${empId}`,
 			SK: `RMBRSMNT#${reimbursementId}#DTL#${detailId}`,
 		},
-		ConditionExpression: "(RMB_status in (:sts2))",
 		UpdateExpression: "set RMB_status = :sts",
+		ConditionExpression: "(RMB_status in (:sts2))",
 		ExpressionAttributeValues: {
 			":sts": "submitted",
 			":sts2": "draft",

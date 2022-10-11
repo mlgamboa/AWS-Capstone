@@ -98,12 +98,12 @@ async function updateDetailsSubmitted(empId, reimbursement) {
 		"reimbursement.flexReimbursementId",
 		reimbursement.flexReimbursementId
 	);
-	detailArr.forEach(async detail => {
+	const submitItems = detailArr.map(async detail => {
 		await dbReimbDetails.updateDetailToSubmitted(
 			empId,
 			reimbursement.flexReimbursementId,
 			detail.detailId
 		);
 	});
-	return detailArr;
+	return await Promise.all(submitItems);
 }
