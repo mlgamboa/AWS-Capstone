@@ -1,11 +1,14 @@
 const { AUDIENCE_OPTIONS } = require("../Env/constants");
 const dbReimbursement = require("../DataAccess/Database/dbReimbursement");
-const reimbursementItemModel = require("../Models/reimbDetailModel");
+const dbReimbDetails = require("../DataAccess/Database/dbReimbDetails");
+const reimbDetailModel = require("../Models/reimbDetailModel");
 const responsesHelper = require("../Helpers/responsesHelper");
 const reimbursementHelper = require("../Helpers/reimbursementHelper");
 const { canUserAccess } = require("../Helpers/audienceHelper");
+const dataValidationHelper = require("../Helpers/dataValidationHelper");
+const jwtHelper = require("../Helpers/jwtHelper");
 
-const reimbursementRoutes = {};
+const reimbursementRoutes = { file, deleteReimbDetail };
 module.exports = reimbursementRoutes;
 
 async function file(req, res, next) {
@@ -16,23 +19,64 @@ async function file(req, res, next) {
 				AUDIENCE_OPTIONS.FILE_REIMBURSEMENT_DETAIL
 			)
 		) {
-			const reimbursementItem = new reimbursementItemModel();
-			reimbursementItem.Date = req.body.date;
-			reimbursementItem.OrNumber = req.body.orNumber;
-			reimbursementItem.NameEstablishment = req.body.nameEstablishment;
-			reimbursementItem.TinEstablishment = req.body.tinEstablishment;
-			reimbursementItem.Amount = req.body.amount;
-			reimbursementItem.CategoryCode = req.body.category;
+			const reimbDetail = new reimbDetailModel();
+			reimbDetail.date = req.body.date;
+			reimbDetail.orNumber = req.body.orNumber;
+			reimbDetail.nameEstablishment = req.body.nameEstablishment;
+			reimbDetail.tinEstablishment = req.body.tinEstablishment;
+			reimbDetail.amount = req.body.amount;
+			reimbDetail.categoryCode = req.body.category;
 
-			const empId = jwtHelper.getEmployeeIdFromToken(token);
-			const reimbursement = dbReimbursement.getLatestDraftByEmpId(empId);
+			const empId = jwtHelper.getEmployeeIdFromToken(
+				req.headers["authorization"]
+			);
+
+			let reimbursement = await dbReimbursement.getLatestDraftByEmpId(
+				empId
+			);
 
 			if (!reimbursement) {
 				await reimbursementHelper.makeDraftReimbursement(empId);
-				reimbursement = dbReimbursement.getLatestDraftByEmpId(empId);
+				reimbursement = await dbReimbursement.getLatestDraftByEmpId(
+					empId
+				);
 			}
 
-			//TODO validate reimbursement detail
+			const validationResults =
+				await dataValidationHelper.validateReimbursementDetail(
+					reimbDetail,
+					reimbursement
+				);
+
+			if (validationResults.errors.length) {
+				res.status(400).json({
+					...responsesHelper.badRequestResponseBuilder(
+						validationResults.message
+					),
+					data: validationResults.errors,
+				});
+			} else {
+				formattedReimbDetail =
+					await reimbursementHelper.formatReimbDetail(
+						empId,
+						reimbDetail,
+						reimbursement
+					);
+
+				const newTotal =
+					reimbursement.totalReimbursementAmount + reimbDetail.amount;
+
+				await dbReimbDetails.file(formattedReimbDetail);
+				await dbReimbursement.updateReimbursementAmount(
+					empId,
+					reimbursement.flexReimbursementId,
+					newTotal
+				);
+
+				res.status(200).json({
+					...responsesHelper.OkResponseBuilder("Detail Filed"),
+				});
+			}
 		} else {
 			res.status(403).json(responsesHelper.forbiddenResponse);
 		}
@@ -49,7 +93,9 @@ async function deleteReimbDetail(req, res, next) {
 				AUDIENCE_OPTIONS.DELETE_REIMBURSEMENT_DETAIL
 			)
 		) {
-			const empId = jwtHelper.getEmployeeIdFromToken(token);
+			const empId = jwtHelper.getEmployeeIdFromToken(
+				req.headers["authorization"]
+			);
 			const reimbursement = await dbReimbursement.getLatestDraftByEmpId(
 				empId
 			);
@@ -61,8 +107,29 @@ async function deleteReimbDetail(req, res, next) {
 					),
 				});
 			} else {
-				// delete transaction db delete transaction
-				// recalculate transaction amount
+				const deletedDetail = await dbReimbDetails.deleteDetail(
+					empId,
+					reimbursement.flexReimbursementId,
+					req.body.itemId
+				);
+
+				if (!deletedDetail) {
+					res.status(404).json({
+						...responsesHelper.notFoundBuilder("Item not found"),
+					});
+				} else {
+					const newTotal =
+						reimbursement.totalReimbursementAmount -
+						deletedDetail.amount;
+					await dbReimbursement.updateReimbursementAmount(
+						empId,
+						reimbursement.flexReimbursementId,
+						newTotal
+					);
+					res.status(200).json(
+						responsesHelper.OkResponseBuilder("OK. Detail deleted")
+					);
+				}
 			}
 		} else {
 			res.status(403).json(responsesHelper.forbiddenResponse);

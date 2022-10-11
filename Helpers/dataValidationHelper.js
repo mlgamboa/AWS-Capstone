@@ -1,25 +1,23 @@
-const DbCategory = require("../DataAccess/Database/DbCategory");
-const DbFlexCycleCutoff = require("../DataAccess/Database/DbFlexCycleCutoff");
+const dbFlexCycleCutoff = require("../DataAccess/Database/dbFlexCycleCutoff");
 
 let DataValidationHelper = {
 	validateReimbursementDetail,
 	validateTransaction,
 	dateAfterCurrent,
 	amountAboveMinimum,
-	isCategoryCodeValid,
 	itemAmountExceedsCapFn,
 	transactionAmountExceedsCapFn,
 };
 module.exports = DataValidationHelper;
 
 async function validateReimbursementDetail(reimbDetail, reimb) {
-	let isDateIncorrect = dateAfterCurrent(reimbDetail.Date);
-	let isAmountCorrect = amountAboveMinimum(reimbDetail.Amount);
-	let category = await isCategoryCodeValid(reimbDetail.CategoryCode);
-	let itemAmountExceedsCap = await itemAmountExceedsCapFn(
-		reimbDetail.Amount,
-		reimb.TotalReimbursementAmount,
-		reimb.FlexCutoffId
+	const isDateIncorrect = dateAfterCurrent(reimbDetail.date);
+	const isAmountCorrect = amountAboveMinimum(reimbDetail.amount);
+	// let category = await isCategoryCodeValid(reimbDetail.CategoryCode);
+	const itemAmountExceedsCap = await itemAmountExceedsCapFn(
+		reimbDetail.amount,
+		reimb.totalReimbursementAmount,
+		reimb.flexCutoffId
 	);
 
 	let message = "";
@@ -35,10 +33,10 @@ async function validateReimbursementDetail(reimbDetail, reimb) {
 		errors.push("amount");
 	}
 
-	if (!category) {
-		message += "Invalid category code. ";
-		errors.push("category");
-	}
+	// if (!category) {
+	// 	message += "Invalid category code. ";
+	// 	errors.push("category");
+	// }
 
 	if (itemAmountExceedsCap) {
 		message +=
@@ -47,11 +45,6 @@ async function validateReimbursementDetail(reimbDetail, reimb) {
 	}
 
 	return {
-		reimbursementItem: {
-			...reimbDetail,
-			CategoryId: category ? category.CategoryId : null,
-			Date: formatDate(reimbDetail.Date),
-		},
 		message,
 		errors,
 	};
@@ -84,23 +77,23 @@ function dateAfterCurrent(dateStr) {
 }
 
 function amountAboveMinimum(amount) {
-	return amount >= MIN_REIMBURSABLE_AMOUNT;
+	return amount >= process.env.MIN_REIMBURSABLE_AMOUNT;
 }
 
-async function isCategoryCodeValid(categoryCode) {
-	//TODO fix getting by category
-	// let category = await DbCategory.getCategoryByCode(categoryCode);
-	return category ? category : false;
-}
+// async function isCategoryCodeValid(categoryCode) {
+// 	//TODO fix getting by category
+// 	// let category = await DbCategory.getCategoryByCode(categoryCode);
+// 	return category ? category : false;
+// }
 
 async function itemAmountExceedsCapFn(
 	amount,
 	totalReimbursementAmount,
 	flexCutoffId
 ) {
-	let flexCycle = await DbFlexCycleCutoff.getByFlexCycleId(flexCutoffId);
+	let flexCycle = await dbFlexCycleCutoff.getFlexCycleById(flexCutoffId);
 	let newTotal = totalReimbursementAmount + amount;
-	return newTotal > flexCycle.CutoffCapAmount;
+	return newTotal > flexCycle.cutoffCapAmount;
 }
 
 async function transactionAmountExceedsCapFn(
@@ -109,12 +102,4 @@ async function transactionAmountExceedsCapFn(
 ) {
 	let flexCycle = await DbFlexCycleCutoff.getByFlexCycleId(flexCutoffId);
 	return totalReimbursementAmount > flexCycle.CutoffCapAmount;
-}
-
-function formatDate(dateStr) {
-	let dateToFormat = new Date(dateStr);
-
-	return `${dateToFormat.getFullYear()}-${
-		dateToFormat.getMonth() + 1
-	}-${dateToFormat.getDate()}`;
 }

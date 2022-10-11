@@ -1,14 +1,17 @@
 class reimbDetailModel {
-	reimItemId;
-	reimTransId;
+	PK;
+	SK;
+	GSI5_PK;
+	GSI6_PK;
+	RMB_status;
+	reimbDetailId;
+	reimbursementId;
 	date;
 	orNumber;
 	nameEstablishment;
 	tinEstablishment;
 	amount;
-	categoryCode;
-	categoryId;
-	status;
+	category;
 }
 
 module.exports = reimbDetailModel;
