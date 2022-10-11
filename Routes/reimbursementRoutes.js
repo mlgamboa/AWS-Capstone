@@ -1,7 +1,6 @@
 const { AUDIENCE_OPTIONS } = require("../Env/constants");
 const dbReimbursement = require("../DataAccess/Database/dbReimbursement");
 const dbReimbDetails = require("../DataAccess/Database/dbReimbDetails");
-const reimbDetailModel = require("../Models/reimbDetailModel");
 const responsesHelper = require("../Helpers/responsesHelper");
 const reimbursementHelper = require("../Helpers/reimbursementHelper");
 const { canUserAccess } = require("../Helpers/audienceHelper");
@@ -19,13 +18,14 @@ async function file(req, res, next) {
 				AUDIENCE_OPTIONS.FILE_REIMBURSEMENT_DETAIL
 			)
 		) {
-			const reimbDetail = new reimbDetailModel();
-			reimbDetail.date = req.body.date;
-			reimbDetail.orNumber = req.body.orNumber;
-			reimbDetail.nameEstablishment = req.body.nameEstablishment;
-			reimbDetail.tinEstablishment = req.body.tinEstablishment;
-			reimbDetail.amount = req.body.amount;
-			reimbDetail.categoryCode = req.body.category;
+			const reimbDetail = {
+				date: req.body.date,
+				orNumber: req.body.orNumber,
+				nameEstablishment: req.body.nameEstablishment,
+				tinEstablishment: req.body.tinEstablishment,
+				amount: req.body.amount,
+				categoryCode: req.body.category,
+			};
 
 			const empId = jwtHelper.getEmployeeIdFromToken(
 				req.headers["authorization"]
