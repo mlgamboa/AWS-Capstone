@@ -147,7 +147,9 @@ async function submitReimbursement(req, res, next) {
 				AUDIENCE_OPTIONS.SUBMIT_REIMBURSEMENT
 			)
 		) {
-			const empId = jwtHelper.getEmployeeIdFromToken(token);
+			const empId = jwtHelper.getEmployeeIdFromToken(
+				req.headers["authorization"]
+			);
 			const reimbursement = await dbReimbursement.getLatestDraftByEmpId(
 				empId
 			);
@@ -159,6 +161,8 @@ async function submitReimbursement(req, res, next) {
 					),
 				});
 			} else {
+				//TODO: generate transaction number
+				// const transactionNumber
 				// delete transaction db delete transaction
 				// recalculate transaction amount
 			}
