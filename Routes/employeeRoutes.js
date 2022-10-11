@@ -8,8 +8,6 @@ const employeeRoutes = { getDetails };
 module.exports = employeeRoutes;
 
 async function getDetails(req, res, next) {
-	//TODO: fix db calls
-	//TODO: fix roles
 	try {
 		if (
 			canUserAccess(
@@ -19,11 +17,6 @@ async function getDetails(req, res, next) {
 		) {
 			const userId = req.params.userId;
 			const reimbursementId = req.params.reimbursementId;
-			//TODO: fix get employee id from token
-			// const email = jwtHelper.getEmployeeIdFromToken(
-			// 	req.cookies.token
-			// );
-			// const employee = await dbEmployees.getEmployeeDetailsByEmail(email);
 			res.status(200).json({
 				...responsesHelper.OkResponseBuilder("OK"),
 				data: {

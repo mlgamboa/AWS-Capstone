@@ -20,10 +20,6 @@ async function getReimbbyCutoff(req, res, next) {
 				AUDIENCE_OPTIONS.GET_REIMB_BY_CUTOFF
 			)
 		) {
-			//TODO get cutoffid from query
-			//todo db call to get reimbursement array
-			//format array
-
 			const cutoffId = req.body.cutoffId;
 
 			const reimbursements =

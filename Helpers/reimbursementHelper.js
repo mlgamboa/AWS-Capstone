@@ -91,6 +91,7 @@ async function updateDetailsSubmitted(empId, reimbursement) {
 		empId,
 		reimbursement.flexReimbursementId
 	);
+	console.log(detailArr);
 
 	detailArr.forEach(async detail => {
 		await dbReimbDetails.updateDetailToSubmitted(
