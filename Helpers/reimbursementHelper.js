@@ -1,36 +1,62 @@
+const dbFlexCycleCutoff = require("../DataAccess/Database/dbFlexCycleCutoff");
 const dbReimbursement = require("../DataAccess/Database/dbReimbursement");
-const dbReimbDetails = require("../DataAccess/Database/dbReimbDetails");
+const dbEmployees = require("../DataAccess/Database/dbEmployees");
+const { v4: uuidv4 } = require("uuid");
+const reimbursementModel = require("../Models/reimbursementModel");
 
 const reimbursementHelper = {
 	makeDraftReimbursement,
-	calculateReimbursementAmount,
+	formatReimbDetail,
 };
 module.exports = reimbursementHelper;
 
 async function makeDraftReimbursement(empId) {
-	//TODO const cutoff = get get latest active cut off
 	const latestFlexCycleCutoff = await dbFlexCycleCutoff.getLatestFlexCycle();
-	await dbReimbursement.add(empId, latestFlexCycleCutoff.cutoffId);
+	const reimbursement = await formatDraftReimbursement(
+		empId,
+		latestFlexCycleCutoff.flexCutoffId
+	);
+	await dbReimbursement.add(reimbursement);
 }
 
-// async function calculateReimbursementAmount(reimbursementId) {
-// 	const reimbDetailsArr = await dbReimbDetails.getDetailsByReimbId(
-// 		reimbursementId
-// 	);
+async function formatReimbDetail(empId, reimbDetail, reimbursement) {
+	const employee = await dbEmployees.getEmployeeDetailsById(empId);
+	const uuid = uuidv4();
+	const detail = {
+		PK: `EMP#${empId}`,
+		SK: `RMBRSMNT#${reimbursement.flexReimbursementId}#DTL#${uuid}`,
+		amount: reimbDetail.amount,
+		category: reimbDetail.categoryCode,
+		GSI5_PK: employee.lastName,
+		GSI6_PK: employee.firstName,
+		name_of_establishment: reimbDetail.nameEstablishment,
+		or_number: reimbDetail.orNumber,
+		RMB_status: "draft",
+		tin_of_establishment: reimbDetail.tinEstablishment,
+		RMBRSMNT_id: reimbursement.flexReimbursementId,
+	};
+	return detail;
+}
 
-// 	let totalAmount = 0;
+async function formatDraftReimbursement(empId, cutoffId) {
+	const employee = await dbEmployees.getEmployeeDetailsById(empId);
+	const uuid = uuidv4();
+	const reimbursement = {
+		PK: `EMP#${empId}`,
+		SK: `RMBRSMNT#${uuid}`,
+		amount: "0",
+		CTF_id: cutoffId,
+		date_submitted: "",
+		GSI4_SK: `EMP#${empId}#draft`,
+		GSI5_PK: employee.lastName,
+		GSI6_PK: employee.firstName,
+		RMB_status: "draft",
+		RMBRSMNT_id: uuid,
+		transaction_number: "",
+	};
 
-// 	reimbDetailsArr.forEach(element => {
-// 		totalAmount += element.amount;
-// 	});
-
-// 	await dbReimbursement.updateReimbursementAmount(
-// 		reimbursementId,
-// 		totalAmount
-// 	);
-
-// 	return totalAmount;
-// }
+	return reimbursement;
+}
 
 async function generateTransactionNumber(reimbursement) {
 	// TODO const company = get company
