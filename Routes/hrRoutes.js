@@ -20,7 +20,7 @@ async function getReimbbyCutoff(req, res, next) {
 				AUDIENCE_OPTIONS.GET_REIMB_BY_CUTOFF
 			)
 		) {
-			const cutoffId = req.query.cutoffId; //-- req.query.cutOffId
+			const cutoffId = req.query.cutoffId; 
 
 			const reimbursements =
 				await dbReimbursement.getReimbursementByCutoffId(cutoffId); // US009
@@ -44,7 +44,7 @@ async function getReimbDetails(req, res, next) {
 				AUDIENCE_OPTIONS.GET_REIMB_DETAILS
 			)
 		) {
-			const reimbursementId = req.query.reimbursementId; // --req.query.reimbusementId
+			const reimbursementId = req.query.reimbursementId; 
 
 			const reimbursement_detail =
 				await dbReimbursement.getReimbursmentAndDetailsByReimbursementId(
@@ -70,7 +70,7 @@ async function searchReimbByEmployee(req, res, next) {
 				AUDIENCE_OPTIONS.SEARCH_REIMB
 			)
 		) {
-			const cutoffId = req.query.cutoffId; // -- query lahat
+			const cutoffId = req.query.cutoffId; 
 			const employeeId = req.query.employeeId;
 			const firstName = req.query.firstName;
 			const lastName = req.query.lastName;
@@ -179,14 +179,14 @@ async function rejectReimbursement(req, res, next) {
 						},
 						UpdateExpression: "set RMB_status = :newStatus",
 						ExpressionAttributeValues: {
-							":newStatus": "reject",
+							":newStatus": "rejected",
 						},
 					});
 				});
 				employeeFirstName = data.Items[0].first_name;
 				employeeLastName = data.Items[0].last_name;
 
-				await dbReimbursement.rejectReimbursement(itemsToReject); // -- approveReimbursement nung una
+				await dbReimbursement.rejectReimbursement(itemsToReject); 
 
 				statement =
 					employeeFirstName +

@@ -21,7 +21,7 @@ async function calculateFlexPoints(req, res, next) {
 				flexCredits;
 
 			res.status(200).json({
-				...responses.OkResponseBuilder("Flex points calculated"),
+				...responsesHelper.OkResponseBuilder("Flex points calculated"),
 				data: parseInt(flexPoints.toFixed(0)),
 			});
 		} catch (error) {
