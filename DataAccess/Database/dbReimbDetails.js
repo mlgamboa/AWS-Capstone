@@ -51,6 +51,8 @@ async function getDetailsByReimbId(empId, reimbursementId) {
 }
 
 async function updateDetailToSubmitted(empId, reimbursementId, detailId) {
+	console.log("detailId");
+	console.log(detailId);
 	const params = {
 		TableName: REIMBURSEMENT_TABLE,
 		Key: {
@@ -63,10 +65,12 @@ async function updateDetailToSubmitted(empId, reimbursementId, detailId) {
 			":sts": "submitted",
 			":sts2": "draft",
 		},
+		ReturnValues: "ALL_OLD",
 	};
 	let singleResult;
 	try {
 		singleResult = await dynamoDbClient.update(params).promise();
+		console.log(singleResult);
 	} catch (error) {
 		console.log(error);
 	}
