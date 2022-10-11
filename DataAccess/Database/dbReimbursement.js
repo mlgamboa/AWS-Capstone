@@ -67,6 +67,7 @@ async function updateReimbursementAmount(empId, reimbursementId, totalAmount) {
 }
 
 async function updateReimbursementSubmitted(
+	empId,
 	reimbursementId,
 	transactionNumber
 ) {

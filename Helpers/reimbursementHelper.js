@@ -61,7 +61,7 @@ async function formatDraftReimbursement(empId, cutoffId) {
 	return reimbursement;
 }
 
-async function formatDate() {
+function formatDate() {
 	const dateNow = new Date();
 	const year = dateNow.getFullYear();
 	const month = (dateNow.getMonth() + 1).toString().padStart(2, "0");
