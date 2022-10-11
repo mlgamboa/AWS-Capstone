@@ -37,7 +37,6 @@ async function formatReimbDetail(empId, reimbDetail, reimbursement) {
 		RMBRSMNT_id: reimbursement.flexReimbursementId,
 		date_submitted: formatDate(),
 	};
-	console.log(detail);
 	return detail;
 }
 
