@@ -20,7 +20,7 @@ async function getReimbbyCutoff(req, res, next) {
 				AUDIENCE_OPTIONS.GET_REIMB_BY_CUTOFF
 			)
 		) {
-			const cutoffId = req.body.cutoffId;
+			const cutoffId = req.query.cutoffId; //-- req.query.cutOffId
 
 			const reimbursements =
 				await dbReimbursement.getReimbursementByCutoffId(cutoffId); // US009
@@ -44,7 +44,7 @@ async function getReimbDetails(req, res, next) {
 				AUDIENCE_OPTIONS.GET_REIMB_DETAILS
 			)
 		) {
-			const reimbursementId = req.body.reimbursementId;
+			const reimbursementId = req.query.reimbursementId; // --req.query.reimbusementId
 
 			const reimbursement_detail =
 				await dbReimbursement.getReimbursmentAndDetailsByReimbursementId(
@@ -70,10 +70,10 @@ async function searchReimbByEmployee(req, res, next) {
 				AUDIENCE_OPTIONS.SEARCH_REIMB
 			)
 		) {
-			const cutoffId = req.body.cutoffId;
-			const employeeId = req.body.employeeId;
-			const firstName = req.body.firstName;
-			const lastName = req.body.lastName;
+			const cutoffId = req.query.cutoffId; // -- query lahat
+			const employeeId = req.query.employeeId;
+			const firstName = req.query.firstName;
+			const lastName = req.query.lastName;
 
 			const reimbursement_detail =
 				await dbReimbursement.getReimbursmentAndDetailsByEmployeeId(
@@ -166,11 +166,11 @@ async function rejectReimbursement(req, res, next) {
 				AUDIENCE_OPTIONS.APPROVE_REIMB
 			)
 		) {
-			const itemsToApprove = [];
+			const itemsToReject = [];
 			if (data.Items.length !== 0) {
 				data.Items.forEach(element => {
 					console.log(element.PK);
-					itemsToApprove.push({
+					itemsToReject.push({
 						TableName: REIMBURSEMENT_TABLE,
 						Key: {
 							PK: element.PK,
@@ -185,14 +185,14 @@ async function rejectReimbursement(req, res, next) {
 				employeeFirstName = data.Items[0].first_name;
 				employeeLastName = data.Items[0].last_name;
 
-				await dbReimbursement.approveReimbursement(itemsToApprove);
+				await dbReimbursement.rejectReimbursement(itemsToReject); // -- approveReimbursement nung una
 
 				statement =
 					employeeFirstName +
 					" " +
 					employeeLastName +
 					"'s " +
-					"Reimbursements has been approved";
+					"Reimbursements has been rejected";
 				res.status(200).json({
 					...responsesHelper.OkResponseBuilder("OK"),
 					statement,
