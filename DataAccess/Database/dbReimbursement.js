@@ -1,5 +1,4 @@
 const AWS = require("aws-sdk");
-const reimbursementModel = require("../../Models/reimbursementModel");
 
 const dbReimbursement = {
 	getLatestDraftByEmpId,
@@ -27,13 +26,15 @@ async function getLatestDraftByEmpId(empId) {
 
 		let reimbursement = null;
 		if (singleResultArr.Items.length === 1) {
-			reimbursement = new reimbursementModel();
-			reimbursement.totalReimbursementAmount = parseInt(
-				singleResultArr.Items[0].amount
-			);
-			reimbursement.flexCutoffId = singleResultArr.Items[0].CTF_id;
-			reimbursement.flexReimbursementId =
-				singleResultArr.Items[0].RMBRSMNT_id;
+			reimbursement = {
+				totalReimbursementAmount: parseInt(
+					singleResultArr.Items[0].amount
+				),
+				flexCutoffId: singleResultArr.Items[0].CTF_id,
+				flexReimbursementId:
+					singleResultArr.Items[0].RMBRSMNT_id
+			}
+			
 		}
 		return reimbursement;
 	} catch (error) {

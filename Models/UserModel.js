@@ -1,3 +1,4 @@
+"use strict";
 class userModel {
 	email;
 	password;

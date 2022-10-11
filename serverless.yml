@@ -35,7 +35,7 @@ provider:
           Resource: 
             - arn:aws:dynamodb:ap-southeast-1:702954692849:table/flexben_group3
 
-  
+
 plugins:
   - serverless-offline
   - serverless-express
