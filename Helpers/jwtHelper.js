@@ -21,7 +21,6 @@ function getAudienceFromToken(token) {
 	return jwt.decode(token)["aud"];
 }
 
-//TODO: fix db call
 async function generateToken(prevToken, userId) {
 	const id = userId || getEmployeeIdFromToken(prevToken);
 	const employee = await dbEmployees.getEmployeeDetailsById(id);
