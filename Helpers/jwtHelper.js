@@ -9,7 +9,7 @@ const jwtHelper = {
 	getEmployeeIdFromToken,
 	generateToken,
 	verifyToken,
-	getAudienceFromToken,
+	getAudienceFromToken
 };
 module.exports = jwtHelper;
 
@@ -47,7 +47,6 @@ async function generateToken(prevToken, userId) {
 		algorithm: process.env.ALGORITHM,
 		expiresIn: process.env.EXPIRY,
 		issuer: process.env.ISSUER,
-		//TODO: change email to id
 		subject: userId || employee.employeeId,
 		audience: audience,
 	};
@@ -75,3 +74,4 @@ function verifyToken(req, res, next) {
 		});
 	}
 }
+
