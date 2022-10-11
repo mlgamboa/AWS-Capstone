@@ -79,8 +79,9 @@ async function searchReimbByEmployee(req, res, next) {
 				await dbReimbursement.getReimbursmentAndDetailsByEmployee(
 					cutoffId,
 					employeeId,
-					firstName,
-					lastName
+					lastName,
+					firstName
+					
 				); // US0010
 
 			res.status(200).json({
