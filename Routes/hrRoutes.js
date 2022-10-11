@@ -76,7 +76,7 @@ async function searchReimbByEmployee(req, res, next) {
 			const lastName = req.query.lastName;
 
 			const reimbursement_detail =
-				await dbReimbursement.getReimbursmentAndDetailsByEmployeeId(
+				await dbReimbursement.getReimbursmentAndDetailsByEmployee(
 					cutoffId,
 					employeeId,
 					firstName,
