@@ -1,9 +1,10 @@
 const AWS = require("aws-sdk");
+const FileReimbursementTransaction = require("../Files/fileReimbursementTransaction");
 
 const dbReimbursement = {
 	getLatestDraftByEmpId,
 	add,
-	updateReimbursementAmount,
+	updateReimbursementAmount, getReimbursentAndDetails
 };
 module.exports = dbReimbursement;
 
@@ -65,4 +66,46 @@ async function updateReimbursementAmount(empId, reimbursementId, totalAmount) {
 		};
 		const singleResultArr = await dynamoDbClient.update(params).promise();
 	} catch (error) {}
+}
+
+async function getReimbursentAndDetails(empId, reimbursementId) {
+		const params = {
+			TableName: REIMBURSEMENT_TABLE,
+			KeyConditionExpression: "PK = :pk and  begins_with(SK, :sk)",
+			ExpressionAttributeValues: {
+			  ":pk": `EMP#${empId}`,
+			  ":sk": `RMBRSMNT#${reimbursementId}`,
+			},
+		  };
+
+		  const queryResult = await dynamoDbClient.query(params).promise();
+
+		  let data = queryResult.Items;
+
+		  console.log(data);
+
+		  let transaction = null;
+		  let detailsArr = [];
+		  let categories = [];
+
+		  data.forEach((item) => {
+			if (item.SK === `RMBRSMNT#${reimbursementId}`) {
+			  transaction = item;
+			} else {
+			  detailsArr.push(item);
+			  if (categories.indexOf(item.category) === -1) {
+				categories.push(item.category);
+			  }
+			}
+		  });
+
+		  if (transaction) {
+			await FileReimbursementTransaction.print(
+				transaction,
+				detailsArr,
+				categories
+			  );
+		  }
+
+		  return data;
 }

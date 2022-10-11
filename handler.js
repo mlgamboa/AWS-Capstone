@@ -21,6 +21,12 @@ app.delete(
 	reimbursementRoutes.deleteReimbDetail
 );
 
+app.post(
+	"/print-transaction",
+	jwtHelper.verifyToken,
+	reimbursementRoutes.printReimbursement
+);
+
 
 app.use(errorHelper.logErrorsToConsole);
 app.use(errorHelper.clientErrorHandler);
