@@ -13,7 +13,7 @@ async function getUserByCredentials (email, password) {
     try {
         const params = {
             TableName: REIMBURSEMENT_TABLE,
-            IndexName: 'GSI2',
+            IndexName: 'email-password-index',
             KeyConditionExpression: 'email = :email and password = :password',
             ProjectionExpression: 'EMP_id, EMP_role, first_name, last_name, email, employee_number, password', // -- to filter out the output 
             ExpressionAttributeValues: {

@@ -7,6 +7,7 @@ const reimbursementRoutes = require("./Routes/reimbursementRoutes");
 const errorHelper = require("./Helpers/errorHelper");
 const userRoutes = require("./Routes/userRoutes");
 const jwtHelper = require("./Helpers/jwtHelper");
+const hrRoutes = require("./Routes/hrRoutes");
 
 
 app.use(express.json());
@@ -20,7 +21,8 @@ app.delete(
 	jwtHelper.verifyToken,
 	reimbursementRoutes.deleteReimbDetail
 );
-
+app.put("/reimbursement/approve-reimbursement",jwtHelper.verifyToken, hrRoutes.approveReimbursement);
+app.put("/reimbursement/reject-reimbursement",jwtHelper.verifyToken, hrRoutes.rejectReimbursement);
 
 app.use(errorHelper.logErrorsToConsole);
 app.use(errorHelper.clientErrorHandler);
