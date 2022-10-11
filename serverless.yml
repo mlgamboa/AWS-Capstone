@@ -1,5 +1,4 @@
 service: awsnodetraining-group3
-
 frameworkVersion: '3'
 
 provider:
@@ -20,7 +19,9 @@ provider:
     ISSUER: FLEXBENAPP_COM
     EXPIRY: 15m
     MIN_REIMBURSABLE_AMOUNT: 500
-    TAX_RATE: 0.12
+    TAX_RATE: 0.12    
+    FILE_PATH: group3/files/
+    BUCKET: awsnodejstraining
   iam:
     role:
       statements:

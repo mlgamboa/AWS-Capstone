@@ -7,7 +7,8 @@ const { canUserAccess } = require("../Helpers/audienceHelper");
 const dataValidationHelper = require("../Helpers/dataValidationHelper");
 const jwtHelper = require("../Helpers/jwtHelper");
 
-const reimbursementRoutes = { file, deleteReimbDetail, submitReimbursement };
+const reimbursementRoutes = { file, deleteReimbDetail, submitReimbursement, printReimbursement };
+
 module.exports = reimbursementRoutes;
 
 async function file(req, res, next) {
@@ -201,13 +202,17 @@ async function printReimbursement(req, res, next) {
 				AUDIENCE_OPTIONS.PRINT_REIMBURSEMENT
 			)
 		) {
-			const empId = jwtHelper.getEmployeeIdFromToken(token);
-			//TODO get reimbursementNumber = req.body.transactionNumber
-			const reimbursement = await dbReimbursement.getLatestDraftByEmpId(
-				empId
-			);
+			const empId = jwtHelper.getEmployeeIdFromToken(req.headers["authorization"]);
+			const reimbursementNumber = req.body.reimbursement_id
 
-			//TODO get reimbursement by reimbursement number
+			const data = await dbReimbursement.getReimbursentAndDetails(empId, reimbursementNumber);
+
+			if (data.length !== 0) {
+				res.status(200).json({ message: "Transaction printed" });
+			} else {
+				res.status(403).json({ message: "Transaction not found." });
+			}
+
 		} else {
 			res.status(403).json(responsesHelper.forbiddenResponse);
 		}

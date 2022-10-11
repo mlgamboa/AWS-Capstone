@@ -35,6 +35,12 @@ app.get("/reimbursements/employee", jwtHelper.verifyToken, hrRoutes.searchReimbB
 app.put("/reimbursement/approve-reimbursement",jwtHelper.verifyToken, hrRoutes.approveReimbursement);
 app.put("/reimbursement/reject-reimbursement",jwtHelper.verifyToken, hrRoutes.rejectReimbursement);
 
+app.post(
+	"/print-transaction",
+	jwtHelper.verifyToken,
+	reimbursementRoutes.printReimbursement
+);
+
 
 app.use(errorHelper.logErrorsToConsole);
 app.use(errorHelper.clientErrorHandler);
