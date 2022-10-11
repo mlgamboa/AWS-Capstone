@@ -7,7 +7,6 @@ const dbEmployees = { getEmployeeDetailsById };
 module.exports = dbEmployees;
 
 async function getEmployeeDetailsById(userId) {
-	//TODO: optimize query for getting employee details
 	try {
 		const params = {
 			TableName: REIMBURSEMENT_TABLE,

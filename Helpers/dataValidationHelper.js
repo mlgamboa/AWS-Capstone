@@ -33,11 +33,6 @@ async function validateReimbursementDetail(reimbDetail, reimb) {
 		errors.push("amount");
 	}
 
-	// if (!category) {
-	// 	message += "Invalid category code. ";
-	// 	errors.push("category");
-	// }
-
 	if (itemAmountExceedsCap) {
 		message +=
 			"Adding this reimbursement item will exceed the maximum reimbursement amount for your flex cycle. ";
@@ -79,12 +74,6 @@ function dateAfterCurrent(dateStr) {
 function amountAboveMinimum(amount) {
 	return amount >= process.env.MIN_REIMBURSABLE_AMOUNT;
 }
-
-// async function isCategoryCodeValid(categoryCode) {
-// 	//TODO fix getting by category
-// 	// let category = await DbCategory.getCategoryByCode(categoryCode);
-// 	return category ? category : false;
-// }
 
 async function itemAmountExceedsCapFn(
 	amount,
