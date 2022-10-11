@@ -31,9 +31,8 @@ async function getLatestDraftByEmpId(empId) {
 					singleResultArr.Items[0].amount
 				),
 				flexCutoffId: singleResultArr.Items[0].CTF_id,
-				flexReimbursementId:
-					singleResultArr.Items[0].RMBRSMNT_id
-			}
+				flexReimbursementId: singleResultArr.Items[0].RMBRSMNT_id,
+			};
 		}
 		return reimbursement;
 	} catch (error) {
@@ -65,4 +64,18 @@ async function updateReimbursementAmount(empId, reimbursementId, totalAmount) {
 		};
 		const singleResultArr = await dynamoDbClient.update(params).promise();
 	} catch (error) {}
+}
+
+async function updateReimbursementSubmitted(
+	reimbursementId,
+	transactionNumber
+) {
+	const params = {
+		TableName: REIMBURSEMENT_TABLE,
+		Key: { PK: `EMP#${empId}`, SK: `RMBRSMNT#${reimbursementId}` },
+		UpdateExpression: "set amount = :amt",
+		ExpressionAttributeValues: {
+			":amt": totalAmount,
+		},
+	};
 }

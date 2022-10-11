@@ -28,13 +28,14 @@ async function formatReimbDetail(empId, reimbDetail, reimbursement) {
 		SK: `RMBRSMNT#${reimbursement.flexReimbursementId}#DTL#${uuid}`,
 		amount: reimbDetail.amount,
 		category: reimbDetail.categoryCode,
-		GSI5_PK: employee.lastName,
-		GSI6_PK: employee.firstName,
+		last_name: employee.lastName,
+		first_name: employee.firstName,
 		name_of_establishment: reimbDetail.nameEstablishment,
 		or_number: reimbDetail.orNumber,
 		RMB_status: "draft",
 		tin_of_establishment: reimbDetail.tinEstablishment,
 		RMBRSMNT_id: reimbursement.flexReimbursementId,
+		date_submitted: formatDate(),
 	};
 	return detail;
 }
@@ -49,25 +50,34 @@ async function formatDraftReimbursement(empId, cutoffId) {
 		CTF_id: cutoffId,
 		date_submitted: "",
 		GSI4_SK: `EMP#${empId}#draft`,
-		GSI5_PK: employee.lastName,
-		GSI6_PK: employee.firstName,
+		last_name: employee.lastName,
+		first_name: employee.firstName,
 		RMB_status: "draft",
 		RMBRSMNT_id: uuid,
 		transaction_number: "",
+		date_submitted: formatDate(),
 	};
 
 	return reimbursement;
 }
 
-async function generateTransactionNumber(empId, reimbursement) {
-	const company = dbCompany.getCompanyByEmpId(empId);
+async function formatDate() {
 	const dateNow = new Date();
-	const formattedDate = formatDate(dateNow);
-	// return transactionNumber = `${company.Code}-${reimbursement.FlexCutoffId}-${formattedDate}-${reimbursement.FlexReimbursementId}`;
+	const year = dateNow.getFullYear();
+	const month = (dateNow.getMonth() + 1).toString().padStart(2, "0");
+	const date = dateNow.getDate();
+	return `${year}-${month}-${date}`;
 }
 
-function formatDate(dateToFormat) {
-	let date = new Date(dateToFormat);
+async function generateTransactionNumber(empId, reimbursement) {
+	const company = await dbCompany.getCompanyByEmpId(empId);
+	const dateNow = new Date();
+	const formattedDate = formatDateTransactionNumber(dateNow);
+	return (transactionNumber = `${company.code}-${reimbursement.flexCutoffId}-${formattedDate}-${reimbursement.flexReimbursementId}`);
+}
+
+function formatDateTransactionNumber(dateToFormat) {
+	const date = new Date(dateToFormat);
 	return `${date.getFullYear()}${(date.getMonth() + 1)
 		.toString()
 		.padStart(2, "0")}${date.getDate()}`;

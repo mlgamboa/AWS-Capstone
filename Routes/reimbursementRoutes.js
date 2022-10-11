@@ -7,7 +7,7 @@ const { canUserAccess } = require("../Helpers/audienceHelper");
 const dataValidationHelper = require("../Helpers/dataValidationHelper");
 const jwtHelper = require("../Helpers/jwtHelper");
 
-const reimbursementRoutes = { file, deleteReimbDetail };
+const reimbursementRoutes = { file, deleteReimbDetail, submitReimbursement };
 module.exports = reimbursementRoutes;
 
 async function file(req, res, next) {
@@ -161,8 +161,18 @@ async function submitReimbursement(req, res, next) {
 					),
 				});
 			} else {
-				//TODO: generate transaction number
-				// const transactionNumber
+				const transactionNumber =
+					await reimbursementHelper.generateTransactionNumber(
+						empId,
+						reimbursement
+					);
+				console.log(transactionNumber);
+
+				res.status(200).json(responsesHelper.OkResponseBuilder("OK"));
+				//update reimbursement to submitted
+				//status
+				//date submitted
+				//transaction number
 				// delete transaction db delete transaction
 				// recalculate transaction amount
 			}
