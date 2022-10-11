@@ -9,7 +9,7 @@ const jwtHelper = {
 	getEmployeeIdFromToken,
 	generateToken,
 	verifyToken,
-	getAudienceFromToken
+	getAudienceFromToken,
 };
 module.exports = jwtHelper;
 
@@ -74,4 +74,3 @@ function verifyToken(req, res, next) {
 		});
 	}
 }
-

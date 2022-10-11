@@ -16,7 +16,9 @@ async function calculateFlexPoints(req, res, next) {
 			const flexCredits = req.body.flexCredits ? req.body.flexCredits : 0;
 			const monthlyRate = req.body.monthlyRate ? req.body.monthlyRate : 0;
 
-			const flexPoints = ((monthlyRate * (1 - process.env.TAX_RATE)) / 21.75) * flexCredits;
+			const flexPoints =
+				((monthlyRate * (1 - process.env.TAX_RATE)) / 21.75) *
+				flexCredits;
 
 			res.status(200).json({
 				...responses.OkResponseBuilder("Flex points calculated"),

@@ -1,5 +1,5 @@
 // const bcrypt = require("bcrypt");
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
 const responsesHelper = require("../Helpers/responsesHelper");
 const jwtHelper = require("../Helpers/jwtHelper");
@@ -9,7 +9,6 @@ const userRoutes = { login, logout };
 module.exports = userRoutes;
 
 async function login(req, res, next) {
-
 	const email = req.body.email;
 	const unhashedPassword = req.body.password;
 	console.log(email);
@@ -24,13 +23,16 @@ async function login(req, res, next) {
 	}
 
 	try {
-		const account = await dbUser.getUserByCredentials(email, unhashedPassword);
+		const account = await dbUser.getUserByCredentials(
+			email,
+			unhashedPassword
+		);
 		console.log(account);
 
 		if (!account) {
 			res.status(401).json({
 				...responsesHelper.unathorizedResponseBuilder(
-				"Account not found"
+					"Account not found"
 				),
 			});
 		} else {
@@ -42,12 +44,15 @@ async function login(req, res, next) {
 					),
 				});
 			} else {
-				let token = await jwtHelper.generateToken(null, account.employeeId);
+				let token = await jwtHelper.generateToken(
+					null,
+					account.employeeId
+				);
 				// res.cookie("token", token, { httpOnly: true });
 				res.status(200).json({
 					...responsesHelper.OkResponseBuilder("OK"),
 					accessToken: token,
-					account
+					account,
 				});
 			}
 		}
@@ -57,8 +62,8 @@ async function login(req, res, next) {
 }
 
 async function logout(req, res, next) {
-	const authHeader = req.headers['authorization'];
-	jwt.sign({authHeader}, process.env.CLEAR_SECRET_KEY, {expiresIn: '1'});
+	const authHeader = req.headers["authorization"];
+	jwt.sign({ authHeader }, process.env.CLEAR_SECRET_KEY, { expiresIn: "1" });
 	res.status(200).json({
 		...responsesHelper.OkResponseBuilder("Logged out"),
 	});
