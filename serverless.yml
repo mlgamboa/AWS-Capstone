@@ -1,4 +1,4 @@
-service: awsnodetraining-mike-v2
+service: awsnodetraining-group3
 frameworkVersion: '3'
 
 provider:
