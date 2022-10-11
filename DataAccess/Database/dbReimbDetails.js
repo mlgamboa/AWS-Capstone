@@ -1,5 +1,10 @@
 const AWS = require("aws-sdk");
-const dbReimbDetails = { getDetailsByReimbId, file, deleteDetail };
+const dbReimbDetails = {
+	getDetailsByReimbId,
+	file,
+	deleteDetail,
+	updateDetailToSubmitted,
+};
 module.exports = dbReimbDetails;
 
 const dynamoDbClient = new AWS.DynamoDB.DocumentClient();
@@ -16,7 +21,57 @@ async function file(reimbDetail) {
 		console.log(error);
 	}
 }
-async function getDetailsByReimbId(reimbId) {}
+async function getDetailsByReimbId(empId, reimbursementId) {
+	try {
+		const params = {
+			TableName: REIMBURSEMENT_TABLE,
+			KeyConditionExpression: "PK = :pk and begins_with(SK, :sk)",
+			ProjectionExpression: "DTL_id",
+			ExpressionAttributeValues: {
+				":pk": `EMP#${empId}`,
+				":sk": `RMBRSMNT#${reimbursementId}#DTL#`,
+			},
+		};
+		const resultsArr = await dynamoDbClient.query(params).promise();
+
+		let detailsArr = null;
+		if (resultsArr.Items.length) {
+			detailsArr = [];
+			resultsArr.Items.forEach(item => {
+				const detail = {
+					detailId: item.DTL_id,
+				};
+				detailsArr.push(detail);
+			});
+		}
+		return detailsArr;
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+async function updateDetailToSubmitted(empId, reimbursementId, detailId) {
+	const params = {
+		TableName: REIMBURSEMENT_TABLE,
+		Key: {
+			PK: `EMP#${empId}`,
+			SK: `RMBRSMNT#${reimbursementId}#DTL#${detailId}`,
+		},
+		ConditionExpression: "(RMB_status in (:sts2))",
+		UpdateExpression: "set RMB_status = :sts",
+		ExpressionAttributeValues: {
+			":sts": "submitted",
+			":sts2": "draft",
+		},
+	};
+	let singleResult;
+	try {
+		singleResult = await dynamoDbClient.update(params).promise();
+	} catch (error) {
+		console.log(error);
+	}
+	return singleResult;
+}
 
 async function deleteDetail(empId, reimbursementId, detailId) {
 	const params = {
@@ -40,8 +95,8 @@ async function deleteDetail(empId, reimbursementId, detailId) {
 	let deletedDetail = null;
 	if (singleResult) {
 		deletedDetail = {
-			amount: parseInt(singleResult.Attributes.amount)
-		}
+			amount: parseInt(singleResult.Attributes.amount),
+		};
 	}
 	return deletedDetail;
 }
