@@ -33,6 +33,7 @@ async function formatReimbDetail(empId, reimbDetail, reimbursement) {
 		or_number: reimbDetail.orNumber,
 		RMB_status: "draft",
 		tin_of_establishment: reimbDetail.tinEstablishment,
+		RMBRSMNT_id: reimbursement.flexReimbursementId,
 	};
 	return detail;
 }
