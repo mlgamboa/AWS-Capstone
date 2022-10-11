@@ -166,15 +166,24 @@ async function submitReimbursement(req, res, next) {
 						empId,
 						reimbursement
 					);
-				console.log(transactionNumber);
 
-				res.status(200).json(responsesHelper.OkResponseBuilder("OK"));
-				//update reimbursement to submitted
-				//status
-				//date submitted
-				//transaction number
-				// delete transaction db delete transaction
-				// recalculate transaction amount
+				await dbReimbursement.updateReimbursementSubmitted(
+					empId,
+					reimbursement.flexReimbursementId,
+					transactionNumber
+				);
+
+				const detailArr =
+					await reimbursementHelper.updateDetailsSubmitted(
+						empId,
+						reimbursement
+					);
+
+				res.status(200).json({
+					...responsesHelper.OkResponseBuilder(
+						"OK. Draft reimbursement submitted"
+					),
+				});
 			}
 		} else {
 			res.status(403).json(responsesHelper.forbiddenResponse);
