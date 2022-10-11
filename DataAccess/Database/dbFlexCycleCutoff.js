@@ -1,5 +1,4 @@
 const AWS = require("aws-sdk");
-const flexCycleCutoffModel = require("../../Models/flexCycleCutoffModel");
 
 const dynamoDbClient = new AWS.DynamoDB.DocumentClient();
 const REIMBURSEMENT_TABLE = process.env.REIMBURSEMENT_TABLE;
@@ -22,8 +21,9 @@ async function getLatestFlexCycle() {
 		const singleResultArr = await dynamoDbClient.query(params).promise();
 		let flexCycle = null;
 		if (singleResultArr.Items.length === 1) {
-			flexCycle = new flexCycleCutoffModel();
-			flexCycle.flexCutoffId = singleResultArr.Items[0].CTF_id;
+			flexCycle = {
+				flexCutoffId: singleResultArr.Items[0].CTF_id,
+			};
 		}
 		return flexCycle;
 	} catch (error) {
@@ -46,10 +46,9 @@ async function getFlexCycleById(id) {
 		const singleResultArr = await dynamoDbClient.query(params).promise();
 		let flexCycle = null;
 		if (singleResultArr.Items.length === 1) {
-			flexCycle = new flexCycleCutoffModel();
-			flexCycle.cutoffCapAmount = parseInt(
-				singleResultArr.Items[0].amount
-			);
+			flexCycle = {
+				cutoffCapAmount: parseInt(singleResultArr.Items[0].amount),
+			};
 		}
 
 		return flexCycle;
