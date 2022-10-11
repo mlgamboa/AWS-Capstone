@@ -9,7 +9,6 @@ const userRoutes = require("./Routes/userRoutes");
 const hrRoutes = require("./Routes/hrRoutes");
 const flexPointRoutes = require("./Routes/flexPointRoutes");
 const jwtHelper = require("./Helpers/jwtHelper");
-const hrRoutes = require("./Routes/hrRoutes");
 
 app.use(express.json());
 

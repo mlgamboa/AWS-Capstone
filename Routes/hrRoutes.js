@@ -2,7 +2,6 @@ const dbReimbursement = require("../DataAccess/Database/dbReimbursement");
 const { AUDIENCE_OPTIONS } = require("../Env/constants");
 const { canUserAccess } = require("../Helpers/audienceHelper");
 const responsesHelper = require("../Helpers/responsesHelper");
-const dbReimbursement = require("../DataAccess/Database/dbReimbursement");
 
 const hrRoutes = {
 	getReimbbyCutoff,
