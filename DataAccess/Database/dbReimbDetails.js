@@ -51,8 +51,7 @@ async function getDetailsByReimbId(empId, reimbursementId) {
 }
 
 async function updateDetailToSubmitted(empId, reimbursementId, detailId) {
-	console.log("detailId");
-	console.log(detailId);
+	console.log("detailId", detailId);
 	const params = {
 		TableName: REIMBURSEMENT_TABLE,
 		Key: {

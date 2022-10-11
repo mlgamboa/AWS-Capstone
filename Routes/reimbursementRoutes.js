@@ -172,12 +172,16 @@ async function submitReimbursement(req, res, next) {
 						empId,
 						reimbursement
 					);
+				console.log(transactionNumber);
+				console.log("BEFORE UPDATING REIMBURSEMENT");
 
 				await dbReimbursement.updateReimbursementSubmitted(
 					empId,
 					reimbursement.flexReimbursementId,
 					transactionNumber
 				);
+
+				console.log("BEFORE UPDATING DETAILS");
 
 				const detailArr =
 					await reimbursementHelper.updateDetailsSubmitted(
