@@ -1,3 +1,4 @@
+"use strict";
 class employeeModel {
 	employeeId;
 	employeeNumber;

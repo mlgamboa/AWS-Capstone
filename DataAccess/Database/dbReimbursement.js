@@ -31,8 +31,9 @@ async function getLatestDraftByEmpId(empId) {
 					singleResultArr.Items[0].amount
 				),
 				flexCutoffId: singleResultArr.Items[0].CTF_id,
-				flexReimbursementId: singleResultArr.Items[0].RMBRSMNT_id,
-			};
+				flexReimbursementId:
+					singleResultArr.Items[0].RMBRSMNT_id
+			}
 		}
 		return reimbursement;
 	} catch (error) {

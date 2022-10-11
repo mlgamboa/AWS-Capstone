@@ -39,9 +39,9 @@ async function deleteDetail(empId, reimbursementId, detailId) {
 	}
 	let deletedDetail = null;
 	if (singleResult) {
-		deleteDetail = {
-			amount: parseInt(singleResult.Attributes.amount),
-		};
+		deletedDetail = {
+			amount: parseInt(singleResult.Attributes.amount)
+		}
 	}
 	return deletedDetail;
 }
