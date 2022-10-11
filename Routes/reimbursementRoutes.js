@@ -66,12 +66,12 @@ async function file(req, res, next) {
 				const newTotal =
 					reimbursement.totalReimbursementAmount + reimbDetail.amount;
 
-				await dbReimbDetails.file(formattedReimbDetail);
-				await dbReimbursement.updateReimbursementAmount(
-					empId,
-					reimbursement.flexReimbursementId,
-					newTotal
-				);
+				// await dbReimbDetails.file(formattedReimbDetail);
+				// await dbReimbursement.updateReimbursementAmount(
+				// 	empId,
+				// 	reimbursement.flexReimbursementId,
+				// 	newTotal
+				// );
 
 				res.status(200).json({
 					...responsesHelper.OkResponseBuilder("Detail Filed"),
