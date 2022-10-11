@@ -7,6 +7,7 @@ const reimbursementModel = require("../Models/reimbursementModel");
 const reimbursementHelper = {
 	makeDraftReimbursement,
 	formatReimbDetail,
+	generateTransactionNumber,
 };
 module.exports = reimbursementHelper;
 
@@ -59,7 +60,6 @@ async function formatDraftReimbursement(empId, cutoffId) {
 }
 
 async function generateTransactionNumber(reimbursement) {
-	// TODO const company = get company
 	const dateNow = new Date();
 	const formattedDate = formatDate(dateNow);
 	// return transactionNumber = `${company.Code}-${reimbursement.FlexCutoffId}-${formattedDate}-${reimbursement.FlexReimbursementId}`;
