@@ -14,7 +14,7 @@ async function getLatestFlexCycle() {
 			KeyConditionExpression: "PK = :pk and begins_with(SK, :sk)",
 			ProjectionExpression: "CTF_id",
 			ExpressionAttributeValues: {
-				":pk": "true",
+				":pk": "CTF#true",
 				":sk": "CTF#",
 			},
 			Limit: 1,
