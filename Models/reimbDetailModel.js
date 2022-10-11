@@ -1,3 +1,4 @@
+"use strict";
 class reimbDetailModel {
 	PK;
 	SK;

@@ -1,5 +1,4 @@
 const AWS = require("aws-sdk");
-const reimbDetailModel = require("../../Models/reimbDetailModel");
 const dbReimbDetails = { getDetailsByReimbId, file, deleteDetail };
 module.exports = dbReimbDetails;
 
@@ -40,8 +39,10 @@ async function deleteDetail(empId, reimbursementId, detailId) {
 	}
 	let deletedDetail = null;
 	if (singleResult) {
-		deletedDetail = new reimbDetailModel();
-		deletedDetail.amount = parseInt(singleResult.Attributes.amount);
+		deletedDetail = {
+			amount: parseInt(singleResult.Attributes.amount)
+		}
+		
 	}
 	return deletedDetail;
 }
