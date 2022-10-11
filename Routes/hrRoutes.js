@@ -23,7 +23,7 @@ async function getReimbbyCutoff(req, res, next) {
 			const cutoffId = req.query.cutoffId; 
 
 			const reimbursements =
-				await dbReimbursement.getReimbursementByCutoffId(cutoffId); // US009
+				await dbReimbursement.getReimbursementByCutoffId(cutoffId); 
 
 			res.status(200).json({
 				...responsesHelper.OkResponseBuilder("OK"),
@@ -49,7 +49,7 @@ async function getReimbDetails(req, res, next) {
 			const reimbursement_detail =
 				await dbReimbursement.getReimbursmentAndDetailsByReimbursementId(
 					reimbursementId
-				); // US0010
+				); 
 
 			res.status(200).json({
 				...responsesHelper.OkResponseBuilder("OK"),
@@ -82,7 +82,7 @@ async function searchReimbByEmployee(req, res, next) {
 					lastName,
 					firstName
 					
-				); // US0010
+				); 
 
 			res.status(200).json({
 				...responsesHelper.OkResponseBuilder("OK"),

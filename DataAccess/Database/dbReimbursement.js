@@ -118,7 +118,8 @@ async function getReimbursementByCutoffId(cutoffId) {	// US009
       	ExpressionAttributeValues: {
         	':ctf':`${cutoffId}`,
         	':sk':'RMBRSMNT#'
-      	}
+      	},
+		ProjectionExpression: 'RMB_status, amount, transaction_number, CTF_id, RMBRSMNT_id , date_submitted'
 	};
 	const data = await dynamoDbClient.query(params).promise();
 	return data;
