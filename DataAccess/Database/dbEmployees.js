@@ -9,7 +9,6 @@ const dbEmployees = { getEmployeeDetailsById };
 module.exports = dbEmployees;
 
 async function getEmployeeDetailsById(userId) { 
-	//TODO: optimize query for getting employee details
 	try {
 		const params = {
 			TableName: REIMBURSEMENT_TABLE,
@@ -34,9 +33,7 @@ async function getEmployeeDetailsById(userId) {
 		employee.email = singleResultArr.Items[0].email;
 		employee.isActive = singleResultArr.Items[0].is_active;
 		employee.dateAdded = singleResultArr.Items[0].date_added;
-		// employee.companyId = "assign db result here";
 		employee.role = singleResultArr.Items[0].EMP_role;
-		// employee.roleId = "assign db result here";
 	}
 	return employee;
 	}

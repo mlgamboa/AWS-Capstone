@@ -6,8 +6,8 @@ class employeeModel {
 	email;
 	isActive;
 	dateAdded;
-	companyId;
-	roleId;
+	// companyId;
+	// roleId;
 	role;
 }
 

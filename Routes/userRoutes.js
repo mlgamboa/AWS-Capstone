@@ -1,21 +1,15 @@
 const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
 
 const responsesHelper = require("../Helpers/responsesHelper");
 const jwtHelper = require("../Helpers/jwtHelper");
 const dbUser = require("../DataAccess/Database/dbUser");
-
-// const dbAccounts = require("../DataAccess/Database/dbAccounts");
 
 const userRoutes = { login, logout };
 module.exports = userRoutes;
 
 async function login(req, res, next) {
 
-	const invalidCredsMessage = "Invalid username or password";
-	// const credentialsArr = req.headers.authorization.split(":");
-
-	// email = credentialsArr[0];
-	// unhashedPassword = credentialsArr[1];
 	const email = req.body.email;
 	const unhashedPassword = req.body.password;
 	console.log(email);
@@ -52,7 +46,8 @@ async function login(req, res, next) {
 				// res.cookie("token", token, { httpOnly: true });
 				res.status(200).json({
 					...responsesHelper.OkResponseBuilder("OK"),
-					accessToken: token
+					accessToken: token,
+					account
 				});
 			}
 		}
@@ -62,8 +57,9 @@ async function login(req, res, next) {
 }
 
 async function logout(req, res, next) {
-	res.clearCookie("token");
+	const authHeader = req.headers['authorization'];
+	jwt.sign({authHeader}, process.env.CLEAR_SECRET_KEY, {expiresIn: '1'});
 	res.status(200).json({
-		...responsesHelper.OkResponseBuilder("Cookies cleared"),
+		...responsesHelper.OkResponseBuilder("Logged out"),
 	});
 }
