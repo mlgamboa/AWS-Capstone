@@ -1,14 +1,13 @@
 const { AUDIENCE_OPTIONS } = require("../Env/constants");
 const dbReimbursement = require("../DataAccess/Database/dbReimbursement");
 const dbReimbDetails = require("../DataAccess/Database/dbReimbDetails");
-const reimbDetailModel = require("../Models/reimbDetailModel");
 const responsesHelper = require("../Helpers/responsesHelper");
 const reimbursementHelper = require("../Helpers/reimbursementHelper");
 const { canUserAccess } = require("../Helpers/audienceHelper");
 const dataValidationHelper = require("../Helpers/dataValidationHelper");
 const jwtHelper = require("../Helpers/jwtHelper");
 
-const reimbursementRoutes = { file, deleteReimbDetail };
+const reimbursementRoutes = { file, deleteReimbDetail, submitReimbursement };
 module.exports = reimbursementRoutes;
 
 async function file(req, res, next) {
@@ -19,13 +18,14 @@ async function file(req, res, next) {
 				AUDIENCE_OPTIONS.FILE_REIMBURSEMENT_DETAIL
 			)
 		) {
-			const reimbDetail = new reimbDetailModel();
-			reimbDetail.date = req.body.date;
-			reimbDetail.orNumber = req.body.orNumber;
-			reimbDetail.nameEstablishment = req.body.nameEstablishment;
-			reimbDetail.tinEstablishment = req.body.tinEstablishment;
-			reimbDetail.amount = req.body.amount;
-			reimbDetail.categoryCode = req.body.category;
+			const reimbDetail = {
+				date: req.body.date,
+				orNumber: req.body.orNumber,
+				nameEstablishment: req.body.nameEstablishment,
+				tinEstablishment: req.body.tinEstablishment,
+				amount: req.body.amount,
+				categoryCode: req.body.category,
+			};
 
 			const empId = jwtHelper.getEmployeeIdFromToken(
 				req.headers["authorization"]
@@ -147,7 +147,9 @@ async function submitReimbursement(req, res, next) {
 				AUDIENCE_OPTIONS.SUBMIT_REIMBURSEMENT
 			)
 		) {
-			const empId = jwtHelper.getEmployeeIdFromToken(token);
+			const empId = jwtHelper.getEmployeeIdFromToken(
+				req.headers["authorization"]
+			);
 			const reimbursement = await dbReimbursement.getLatestDraftByEmpId(
 				empId
 			);
@@ -159,8 +161,29 @@ async function submitReimbursement(req, res, next) {
 					),
 				});
 			} else {
-				// delete transaction db delete transaction
-				// recalculate transaction amount
+				const transactionNumber =
+					await reimbursementHelper.generateTransactionNumber(
+						empId,
+						reimbursement
+					);
+
+				await dbReimbursement.updateReimbursementSubmitted(
+					empId,
+					reimbursement.flexReimbursementId,
+					transactionNumber
+				);
+
+				const detailArr =
+					await reimbursementHelper.updateDetailsSubmitted(
+						empId,
+						reimbursement
+					);
+
+				res.status(200).json({
+					...responsesHelper.OkResponseBuilder(
+						"OK. Draft reimbursement submitted"
+					),
+				});
 			}
 		} else {
 			res.status(403).json(responsesHelper.forbiddenResponse);

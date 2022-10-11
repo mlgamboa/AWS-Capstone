@@ -1,8 +1,5 @@
 const AWS = require("aws-sdk");
 
-const AccountModel = require("../../Models/AccountModel");
-const UserModel = require("../../Models/UserModel");
-
 const dynamoDbClient = new AWS.DynamoDB.DocumentClient();
 const REIMBURSEMENT_TABLE = process.env.REIMBURSEMENT_TABLE;
 
@@ -26,15 +23,16 @@ async function getUserByCredentials (email, password) {
 
         let account = null;
         if (singleResultArr.Items.length === 1) {
-            account = new UserModel();
-
-            account.email = singleResultArr.Items[0].email;
-            account.employeeId = singleResultArr.Items[0].EMP_id;
-            account.firstName = singleResultArr.Items[0].first_name;
-            account.lastName = singleResultArr.Items[0].last_name;
-            account.employeeNumber = singleResultArr.Items[0].employee_number;
-            account.password = singleResultArr.Items[0].password;
-            account.role = singleResultArr.Items[0].EMP_role;
+            account = {
+            email: singleResultArr.Items[0].email,
+            employeeId: singleResultArr.Items[0].EMP_id,
+            firstName: singleResultArr.Items[0].first_name,
+            lastName: singleResultArr.Items[0].last_name,
+            employeeNumber: singleResultArr.Items[0].employee_number,
+            password: singleResultArr.Items[0].password,
+            role: singleResultArr.Items[0].EMP_role,
+            }
+            
         }
         return account;
     }
