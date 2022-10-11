@@ -2,12 +2,14 @@ const dbFlexCycleCutoff = require("../DataAccess/Database/dbFlexCycleCutoff");
 const dbReimbursement = require("../DataAccess/Database/dbReimbursement");
 const dbCompany = require("../DataAccess/Database/dbCompany");
 const dbEmployees = require("../DataAccess/Database/dbEmployees");
+const dbReimbDetails = require("../DataAccess/Database/dbReimbDetails");
 const { v4: uuidv4 } = require("uuid");
 
 const reimbursementHelper = {
 	makeDraftReimbursement,
 	formatReimbDetail,
 	generateTransactionNumber,
+	updateDetailsSubmitted,
 };
 module.exports = reimbursementHelper;
 
@@ -36,6 +38,7 @@ async function formatReimbDetail(empId, reimbDetail, reimbursement) {
 		tin_of_establishment: reimbDetail.tinEstablishment,
 		RMBRSMNT_id: reimbursement.flexReimbursementId,
 		date_submitted: formatDate(),
+		DTL_id: uuid,
 	};
 	return detail;
 }
@@ -81,4 +84,20 @@ function formatDateTransactionNumber(dateToFormat) {
 	return `${date.getFullYear()}${(date.getMonth() + 1)
 		.toString()
 		.padStart(2, "0")}${date.getDate()}`;
+}
+
+async function updateDetailsSubmitted(empId, reimbursement) {
+	const detailArr = await dbReimbDetails.getDetailsByReimbId(
+		empId,
+		reimbursement.flexReimbursementId
+	);
+
+	detailArr.forEach(async detail => {
+		await dbReimbDetails.updateDetailToSubmitted(
+			empId,
+			reimbursement.flexReimbursementId,
+			detail.detailId
+		);
+	});
+	return detailArr;
 }

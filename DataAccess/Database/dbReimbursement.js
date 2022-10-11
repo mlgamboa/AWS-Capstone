@@ -4,6 +4,7 @@ const dbReimbursement = {
 	getLatestDraftByEmpId,
 	add,
 	updateReimbursementAmount,
+	updateReimbursementSubmitted,
 };
 module.exports = dbReimbursement;
 
@@ -47,6 +48,7 @@ async function add(detail) {
 			Item: detail,
 		};
 		const singleResultArr = await dynamoDbClient.put(params).promise();
+		return singleResultArr;
 	} catch (error) {
 		console.log(error);
 	}
@@ -63,20 +65,38 @@ async function updateReimbursementAmount(empId, reimbursementId, totalAmount) {
 			},
 		};
 		const singleResultArr = await dynamoDbClient.update(params).promise();
-	} catch (error) {}
+		return singleResultArr;
+	} catch (error) {
+		console.log(error);
+	}
 }
 
 async function updateReimbursementSubmitted(
 	empId,
 	reimbursementId,
-	transactionNumber
+	transaction_number
 ) {
 	const params = {
 		TableName: REIMBURSEMENT_TABLE,
 		Key: { PK: `EMP#${empId}`, SK: `RMBRSMNT#${reimbursementId}` },
-		UpdateExpression: "set amount = :amt",
+		UpdateExpression:
+			"set RMB_status = :sts, transaction_number = :tn, GSI4_SK = :gsi4sk",
+		ConditionExpression: "(RMB_status in (:sts2))",
 		ExpressionAttributeValues: {
-			":amt": totalAmount,
+			":sts": "submitted",
+			":sts2": "draft",
+			":tn": transaction_number,
+			":gsi4sk": `EMP#${empId}#submitted`,
 		},
+		ReturnValues: "ALL_OLD",
 	};
+
+	let singleResult;
+	try {
+		singleResult = await dynamoDbClient.update(params).promise();
+	} catch (error) {
+		console.log(error.code);
+		console.log(error);
+	}
+	return singleResult;
 }
