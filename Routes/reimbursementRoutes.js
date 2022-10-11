@@ -7,7 +7,8 @@ const { canUserAccess } = require("../Helpers/audienceHelper");
 const dataValidationHelper = require("../Helpers/dataValidationHelper");
 const jwtHelper = require("../Helpers/jwtHelper");
 
-const reimbursementRoutes = { file, deleteReimbDetail, printReimbursement };
+const reimbursementRoutes = { file, deleteReimbDetail, submitReimbursement, printReimbursement };
+
 module.exports = reimbursementRoutes;
 
 async function file(req, res, next) {
@@ -161,10 +162,29 @@ async function submitReimbursement(req, res, next) {
 					),
 				});
 			} else {
-				//TODO: generate transaction number
-				// const transactionNumber
-				// delete transaction db delete transaction
-				// recalculate transaction amount
+				const transactionNumber =
+					await reimbursementHelper.generateTransactionNumber(
+						empId,
+						reimbursement
+					);
+
+				await dbReimbursement.updateReimbursementSubmitted(
+					empId,
+					reimbursement.flexReimbursementId,
+					transactionNumber
+				);
+
+				const detailArr =
+					await reimbursementHelper.updateDetailsSubmitted(
+						empId,
+						reimbursement
+					);
+
+				res.status(200).json({
+					...responsesHelper.OkResponseBuilder(
+						"OK. Draft reimbursement submitted"
+					),
+				});
 			}
 		} else {
 			res.status(403).json(responsesHelper.forbiddenResponse);
