@@ -58,8 +58,10 @@ async function login(req, res, next) {
 
 async function logout(req, res, next) {
 	const authHeader = req.headers['authorization'];
-	jwt.sign({authHeader}, process.env.CLEAR_SECRET_KEY, {expiresIn: '1'});
+	const logoutToken = jwt.sign({authHeader}, process.env.CLEAR_SECRET_KEY, {expiresIn: '1'});
 	res.status(200).json({
 		...responsesHelper.OkResponseBuilder("Logged out"),
+		logoutToken
 	});
+	
 }

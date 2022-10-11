@@ -14,7 +14,7 @@ provider:
   environment:
     REIMBURSEMENT_TABLE: flexben_group3
     SECRET_KEY: )x2f-l-opsnd)w!!z2m7ykvony99pt@6@6m+=q2uk3%w8*7$ow
-    CLEAR_SECRET_KEY:  
+    CLEAR_SECRET_KEY: clear
     ALGORITHM: HS256
     ISSUER: FLEXBENAPP_COM
     EXPIRY: 15m
