@@ -7,6 +7,7 @@ const reimbursementRoutes = require("./Routes/reimbursementRoutes");
 const errorHelper = require("./Helpers/errorHelper");
 const userRoutes = require("./Routes/userRoutes");
 const hrRoutes = require("./Routes/hrRoutes");
+const flexPointRoutes = require("./Routes/flexPointRoutes");
 const jwtHelper = require("./Helpers/jwtHelper");
 const hrRoutes = require("./Routes/hrRoutes");
 
@@ -59,6 +60,12 @@ app.post(
 	"/print-transaction",
 	jwtHelper.verifyToken,
 	reimbursementRoutes.printReimbursement
+);
+
+app.post(
+	"/flexpoint",
+	jwtHelper.verifyToken,
+	flexPointRoutes.calculateFlexPoints
 );
 
 app.use(errorHelper.logErrorsToConsole);
