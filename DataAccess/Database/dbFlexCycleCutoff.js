@@ -21,9 +21,10 @@ async function getLatestFlexCycle() {
 		const singleResultArr = await dynamoDbClient.query(params).promise();
 		let flexCycle = null;
 		if (singleResultArr.Items.length === 1) {
-			flexCycle ={
+			flexCycle = {
 				flexCutoffId: singleResultArr.Items[0].CTF_id
 			}
+
 		}
 		return flexCycle;
 	} catch (error) {
@@ -47,9 +48,8 @@ async function getFlexCycleById(id) {
 		let flexCycle = null;
 		if (singleResultArr.Items.length === 1) {
 			flexCycle = {
-				cutoffCapAmount: parseInt(
-				singleResultArr.Items[0].amount
-			)};
+				cutoffCapAmount: parseInt(singleResultArr.Items[0].amount)
+      };
 		}
 
 		return flexCycle;

@@ -34,7 +34,6 @@ async function getLatestDraftByEmpId(empId) {
 				flexReimbursementId:
 					singleResultArr.Items[0].RMBRSMNT_id
 			}
-			
 		}
 		return reimbursement;
 	} catch (error) {

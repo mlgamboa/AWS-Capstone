@@ -42,7 +42,6 @@ async function deleteDetail(empId, reimbursementId, detailId) {
 		deletedDetail = {
 			amount: parseInt(singleResult.Attributes.amount)
 		}
-		
 	}
 	return deletedDetail;
 }

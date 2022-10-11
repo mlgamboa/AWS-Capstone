@@ -1,12 +1,13 @@
 const dbFlexCycleCutoff = require("../DataAccess/Database/dbFlexCycleCutoff");
 const dbReimbursement = require("../DataAccess/Database/dbReimbursement");
+const dbCompany = require("../DataAccess/Database/dbCompany");
 const dbEmployees = require("../DataAccess/Database/dbEmployees");
 const { v4: uuidv4 } = require("uuid");
-const reimbursementModel = require("../Models/reimbursementModel");
 
 const reimbursementHelper = {
 	makeDraftReimbursement,
 	formatReimbDetail,
+	generateTransactionNumber,
 };
 module.exports = reimbursementHelper;
 
@@ -58,8 +59,8 @@ async function formatDraftReimbursement(empId, cutoffId) {
 	return reimbursement;
 }
 
-async function generateTransactionNumber(reimbursement) {
-	// TODO const company = get company
+async function generateTransactionNumber(empId, reimbursement) {
+	const company = dbCompany.getCompanyByEmpId(empId);
 	const dateNow = new Date();
 	const formattedDate = formatDate(dateNow);
 	// return transactionNumber = `${company.Code}-${reimbursement.FlexCutoffId}-${formattedDate}-${reimbursement.FlexReimbursementId}`;
