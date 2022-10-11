@@ -13,14 +13,14 @@ app.use(express.json());
 app.post("/login", userRoutes.login);
 app.get("/logout", jwtHelper.verifyToken, userRoutes.logout);
 
-app.post("/file-detail", jwtHelper.verifyToken, reimbursementRoutes.file);
+app.post("/detail/file", jwtHelper.verifyToken, reimbursementRoutes.file);
 app.delete(
-	"/delete-detail",
+	"/detail/delete",
 	jwtHelper.verifyToken,
 	reimbursementRoutes.deleteReimbDetail
 );
 app.get(
-	"/submit-reimbursement",
+	"/reimbursement/submit",
 	jwtHelper.verifyToken,
 	reimbursementRoutes.submitReimbursement
 );
