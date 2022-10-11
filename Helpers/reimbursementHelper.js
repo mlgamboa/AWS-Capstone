@@ -41,40 +41,21 @@ async function formatDraftReimbursement(empId, cutoffId) {
 	const employee = await dbEmployees.getEmployeeDetailsById(empId);
 	const uuid = uuidv4();
 	const reimbursement = {
-		PK: `EMP#${empId}`, //EMP#35
-		SK: `RMBRSMNT#${uuid}`, // RMBRSMNT#uuid
+		PK: `EMP#${empId}`,
+		SK: `RMBRSMNT#${uuid}`,
 		amount: "0",
-		CTF_id: cutoffId, //cutoff id
-		date_submitted: "", //none yet
-		GSI4_SK: `EMP#${empId}#draft`, //EMP#35#draft
-		GSI5_PK: employee.lastName, //lastname
-		GSI6_PK: employee.firstName, //firstname
+		CTF_id: cutoffId,
+		date_submitted: "",
+		GSI4_SK: `EMP#${empId}#draft`,
+		GSI5_PK: employee.lastName,
+		GSI6_PK: employee.firstName,
 		RMB_status: "draft",
-		RMBRSMNT_id: uuid, //uuid
-		transaction_number: "", //none yet
+		RMBRSMNT_id: uuid,
+		transaction_number: "",
 	};
 
 	return reimbursement;
 }
-
-// async function calculateReimbursementAmount(reimbursementId) {
-// 	const reimbDetailsArr = await dbReimbDetails.getDetailsByReimbId(
-// 		reimbursementId
-// 	);
-
-// 	let totalAmount = 0;
-
-// 	reimbDetailsArr.forEach(element => {
-// 		totalAmount += element.amount;
-// 	});
-
-// 	await dbReimbursement.updateReimbursementAmount(
-// 		reimbursementId,
-// 		totalAmount
-// 	);
-
-// 	return totalAmount;
-// }
 
 async function generateTransactionNumber(reimbursement) {
 	// TODO const company = get company
