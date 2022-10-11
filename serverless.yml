@@ -1,4 +1,5 @@
 service: awsnodetraining-group3
+
 frameworkVersion: '3'
 
 provider:

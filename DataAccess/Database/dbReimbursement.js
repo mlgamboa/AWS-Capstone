@@ -8,6 +8,9 @@ const dbReimbursement = {
 	getReimbursementByCutoffId,
 	getReimbursmentAndDetailsByReimbursementId,
 	getReimbursmentAndDetailsByEmployee
+	getSubmittedReimbursementsByEmployeeId,
+	approveReimbursement,
+	rejectReimbursement
 };
 module.exports = dbReimbursement;
 
@@ -73,6 +76,7 @@ async function updateReimbursementAmount(empId, reimbursementId, totalAmount) {
 		console.log(error);
 	}
 }
+
 
 async function updateReimbursementSubmitted(
 	empId,
@@ -150,4 +154,48 @@ async function getReimbursmentAndDetailsByEmployee(cutoffId, employeeId, lastNam
 	  };
 	const data = await dynamoDbClient.query(params).promise();
 	return data;
+
+async function getSubmittedReimbursementsByEmployeeId(employeeId) {
+	try{
+	const params = {
+		TableName: REIMBURSEMENT_TABLE,
+		KeyConditionExpression: 'PK = :PK and begins_with(SK, :sk)',
+		FilterExpression: 'RMB_status = :status',
+		ExpressionAttributeValues: {
+			':PK': `EMP#${employeeId}`,
+			':sk': 'RMBRSMNT#',
+			':status': 'submitted'
+		}
+	};
+		const data = await dynamoDbClient.query(params).promise();
+		return data;
+	
+	} catch (error) {}
+}
+
+async function approveReimbursement(params){
+    try {
+        const approveItems = params.map(async (item) => {
+            await dynamoDbClient.update(item).promise();
+        });
+
+        await Promise.all(approveItems);
+        
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function rejectReimbursement(params){
+    try {
+        const rejectItems = params.map(async (item) => {
+            await dynamoDbClient.update(item).promise();
+        });
+
+        await Promise.all(rejectItems);
+      
+    } catch (error) {
+        console.log(error);
+    }
+
 }
